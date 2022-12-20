@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load filters %}
+
+{% block content %}
+
+<main>
+
+    <!-- breadcrumb area start -->
+    <section class="breadcrumb__area include-bg pt-150 pb-150 breadcrumb__overlay" data-background="{% static '/img/breadcrumb/breadcrumb-bg-1.jpg'%}">
+    <div class="container">
+        <div class="row">
+           <div class="col-xxl-12">
+              <div class="breadcrumb__content text-center p-relative z-index-1">
+                 <h3 class="breadcrumb__title">Checkout</h3>
+                 <div class="breadcrumb__list">
+                    <span><a href="{% url 'home' %}">Home</a></span>
+                    <span class="dvdr"><i class="fa-regular fa-angle-right"></i></span>
+                    <span>Checkout</span>
+                 </div>
+              </div>
+           </div>
+        </div>
+     </div>
+    </section>
+    <!-- breadcrumb area end -->
+
+    <!-- coupon-area start -->
+    <section class="coupon-area pt-120 pb-30">
+        <div class="container">
+        <div class="row">
+        <div class="col-md-6">
+            <div class="coupon-accordion">
+                    <!-- ACCORDION START -->
+                    
+                    {% if not request.user.is_authenticated %}
+                    <h3>Returning customer? <span id="showlogin">Click here to login</span></h3>
+                    <div id="checkout-login" class="coupon-content">
+                    <div class="coupon-info">
+                        <p class="coupon-text">Enter your
+                                login details below:</p>
+                        <form action="{% url 'login' %}" method="post">
+                                {% csrf_token %}
+                                <p class="form-row-first">
+                                <label>Username or email <span class="required">*</span></label>
+                                <input type="text" name="email">
+                                </p>
+                                <p class="form-row-last">
+                                <label>Password <span class="required">*</span></label>
+                                <input type="password" name="password">
+                                </p>
+                                <p class="form-row">
+                                <button class="tp-btn" type="submit">Login</button>
+                                <label>
+                                    <input type="checkbox">
+                                    Remember me
+                                </label>
+                                </p>
+                                <p class="lost-password">
+                                <a href="{% url 'password_reset' %}">Lost your password?</a>
+                                </p>
+                        </form>
+                    </div>
+                    </div>
+                    <!-- ACCORDION END -->
+                    {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="coupon-accordion">
+                    <!-- ACCORDION START -->
+                    <h3>Have a coupon? <span id="showcoupon">Click here to enter your code</span></h3>
+                    <div id="checkout_coupon" class="coupon-checkout-content">
+                    <div class="coupon-info">
+                        <form action="{% url 'apply_coupon' %}" method="post">
+                            {% csrf_token %}
+                            <p class="checkout-coupon">
+                            <input type="text" name="coupon_code" placeholder="Coupon Code" disabled>
+                            <button class="tp-btn" type="submit" disabled>Apply Coupon</button>
+                            </p>
+                        </form>
+                    </div>
+                    </div>
+                    <!-- ACCORDION END -->
+            </div>
+        </div>
+        </div>
+    </div>
+    </section>
+    <!-- coupon-area end -->
+
+    <!-- checkout-area start -->
+    <section class="checkout-area pb-85">
+        <div class="container">
+            <form action="{% url 'checkout' %}" method="post">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="checkbox-form">
+                            <h3>Billing Details</h3>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="checkout-form-list">
+                                        <label for="name">Full Name <span class="required"></span></label>
+                                        <input type="text" name="name" value="{{ user.name }}" placeholder="First Name" disabled>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="checkout-form-list">
+                                        <label for="email">Email Address <span class="required"></span></label>
+                                        <input type="email" name="email" value="{{ user.email }}" placeholder="example@mail.com" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="your-order mb-30 ">
+                            <h3>Your order</h3>
+                            <div class="your-order-table table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="product-name">Product</th>
+                                            <th class="product-total">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                        {% for course in cart_courses %}
+                                        <tr class="cart_item">
+                                            <td class="product-name">
+                                                {{ course.title }}
+                                            </td>
+                                            <td class="product-total">
+                                                <span class="amount">{{ course.price|currency }}</span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr class="cart-subtotal">
+                                            <th>Cart Subtotal</th>
+                                            <td><span class="amount">{{ cart_total }}</span></td>
+                                        </tr>
+                                        <tr class="order-total">
+                                            <th>Order Total</th>
+                                            <td><strong><span class="amount">{{ cart_total }}</span></strong>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <div class="payment-method">
+                            <div class="accordion" id="checkoutAccordion">
+                                {% if cart_total > 0 %}
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="checkoutOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#bankOne"
+                                            aria-expanded="true" aria-controls="bankOne">
+                                            M-Pesa
+                                        </button>
+                                    </h2>
+                                    <div id="bankOne" class="accordion-collapse collapse show" aria-labelledby="checkoutOne"
+                                        data-bs-parent="#checkoutAccordion">
+                                        <div class="accordion-body">
+                                            <p class="checkout-coupon">
+                                                <input type="text" name="phone" placeholder="07XXXXXXXX" required>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="paymentTwo">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#payment" aria-expanded="false" aria-controls="payment">
+                                        Credit Card
+                                        </button>
+                                    </h2>
+                                    <div id="payment" class="accordion-collapse collapse" aria-labelledby="paymentTwo" data-bs-parent="#checkoutAccordion">
+                                        <div class="accordion-body">
+                                            <p class="checkout-coupon">
+                                                <input type="text" name="credit_card" placeholder="Card Number(disabled)" disabled>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="paypalThree">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#paypal" aria-expanded="false" aria-controls="paypal">
+                                        PayPal
+                                        </button>
+                                    </h2>
+                                    <div id="paypal" class="accordion-collapse collapse" aria-labelledby="paypalThree" data-bs-parent="#checkoutAccordion">
+                                        <div class="accordion-body">
+                                            <a class="tp-btn">Proceed with PayPal</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                </div>
+                                <div class="order-button-payment mt-20">
+                                <button type="submit" class="tp-btn">ENROLL</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    <!-- checkout-area end -->
+</main>
+{% endblock content %}

@@ -1,0 +1,75 @@
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: left;
+    }
+    
+.rating > input{
+    display:none;
+}
+
+.rating > label {
+position: relative;
+width: 1.1em;
+font-size: 2.5vw;
+color: #ff9700;
+cursor: pointer;
+}
+
+.rating > label::before{
+content: "\2605";
+position: absolute;
+opacity: 0;
+}
+
+.rating > label:hover:before,
+.rating > label:hover ~ label:before {
+opacity: 1 !important;
+}
+
+.rating > input:checked ~ label:before{
+opacity:1;
+}
+
+.rating:hover > input:checked ~ label:before{ 
+opacity: 0.4;
+    }
+
+@media only screen and (max-width: 600px) {
+    .rating > label {
+        position: relative;
+        width: 1.1em;
+        font-size: 4.5vw;
+        color: #ff9700;
+        cursor: pointer;
+    }
+}
+
+.download_content {
+    color: rgb(0, 38, 255);
+}
+
+.alert {
+    box-sizing: border-box;
+}
+
+.pd-10 {
+    padding: 5px;
+}
+
+/* The close button */
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+    color: black;
+}

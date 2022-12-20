@@ -1,0 +1,731 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load filters %}
+
+{% block content %}
+<main>
+   <!-- breadcrumb area start -->
+   <section class="breadcrumb__area include-bg pt-150 pb-150 breadcrumb__overlay" data-background="{% static '/img/breadcrumb/breadcrumb-bg-1.jpg' %}">
+      <div class="container">
+         <div class="row">
+            <div class="col-xxl-12">
+               <div class="breadcrumb__content text-center p-relative z-index-1">
+                  <h3 class="breadcrumb__title">{{ course.title }}</h3>
+                  <div class="breadcrumb__list">
+                     <span><a href="{% url 'home' %}">Home</a></span>
+                     <span class="dvdr"><i class="fa-regular fa-angle-right"></i></span>
+                     <span>Courses</span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- breadcrumb area end -->
+
+
+   <!-- course area start -->
+   <section class="course__area pt-115 pb-90">
+      <div class="container">
+         <div class="row">
+            <div class="col-xxl-8 col-xl-8 col-lg-8">
+               <div class="course__wrapper">
+                  <div class="page__title-content mb-25">                          
+                     <div class="breadcrumb__list breadcrumb__list-2 mb-10">
+                        <span><a href="{% url 'home' %}">Home</a></span>
+                        <span class="dvdr"><i class="fa-regular fa-angle-right"></i></span>
+                        <span>Courses</span>
+                     </div>
+                     <span class="breadcrumb__title-pre">{{ course.category }}</span>
+                     <h5 class="breadcrumb__title-2">{{ course.title }}</h5>
+                  </div>
+                  <div class="course__meta-2 d-sm-flex align-items-center mb-30">
+                     <div class="course__teacher-3 d-flex align-items-center mr-70 mb-30">
+                        <div class="course__teacher-thumb-3 mr-15">
+                           <img src="{{ course.owner.avatar.url }}" alt="{{ course.owner.name }}'s image">
+                        </div>
+                        <div class="course__teacher-info-3">
+                           <h5>Teacher</h5>
+                           <p><a href="{{ course.owner.get_absolute_url }}">{{ course.owner.name|title }}</a></p>
+                        </div>
+                     </div>
+                     <div class="course__update mr-80 mb-30">
+                        <h5>Last Update:</h5>
+                        <p>{{ course.updated|date:"F d, Y" }}</p>
+                     </div>
+                     <div class="course__rating-2 mb-30">
+                        <h5>Review:</h5>
+                        <div class="course__rating-inner d-flex align-items-center">
+                           <ul>
+                              <li><i class="fa{% if course.avg_rating > 0 %}-solid {% elif course.avg_rating < 1 %}-regular {% endif %} fa-star"></i></li>
+                              <li><i class="fa{% if course.avg_rating > 1 %}-solid {% elif course.avg_rating < 2 %}-regular {% endif %} fa-star"></i></li>
+                              <li><i class="fa{% if course.avg_rating > 2 %}-solid {% elif course.avg_rating < 3 %}-regular {% endif %} fa-star"></i></li>
+                              <li><i class="fa{% if course.avg_rating > 3 %}-solid {% elif course.avg_rating < 4 %}-regular {% endif %} fa-star"></i></li>
+                              <li><i class="fa{% if course.avg_rating > 4 %}-solid {% elif course.avg_rating < 5 %}-regular {% endif %} fa-star"></i></li>
+                           </ul>
+                           <p>{{ course.avg_rating|floatformat:"1" }}</p>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="course__img w-img mb-30">
+                     <img src="{{ course.thumbnail.url }}" alt="">
+                  </div>
+                  <div class="course__tab-2 mb-45">
+                     <ul class="nav nav-tabs" id="courseTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                           <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true"><i class="fa-regular fa-medal"></i> <span>Discription</span> </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                           <button class="nav-link " id="curriculum-tab" data-bs-toggle="tab" data-bs-target="#curriculum" type="button" role="tab" aria-controls="curriculum" aria-selected="false"><i class="fa-regular fa-book-blank"></i> <span>Curriculum</span> </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                           <button class="nav-link" id="review-tab" data-bs-toggle="tab" data-bs-target="#review" type="button" role="tab" aria-controls="review" aria-selected="false"> <i class="fa-regular fa-star"></i> <span>Reviews</span> </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                           <button class="nav-link" id="member-tab" data-bs-toggle="tab" data-bs-target="#member" type="button" role="tab" aria-controls="member" aria-selected="false"> <i class="fal fa-user"></i> <span>Members</span> </button>
+                        </li>
+                        </ul>
+                  </div>
+                  <div class="course__tab-content mb-95">
+                     <div class="tab-content" id="courseTabContent">
+                        <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                           <div class="course__description">
+                              <h3>Course Overview</h3>
+                              <p>{{ course.overview }}</p>
+
+                              <div class="course__tag-4 mb-35 mt-35">
+                                 <i class="fal fa-tag"></i>
+                                 {% for t in course.course_tags.all  %}
+                                 <a href="{{ t.tag.get_absolute_url }}">{{ t.tag.title }} {% if not forloop.last %}, {% endif %}</a>
+                                 {% endfor %}
+                              </div>
+                              <div class="course__description-list mb-45">
+                                 <h4>What is the Target Audience?</h4>
+                                 <ul>
+                                    {% for a in course.course_audience.all  %}
+                                    <li> <i class="fa-solid fa-check"></i> {{ a.audience.name }}</li>
+                                    {% endfor %}
+                                 </ul>
+                              </div>
+                              <div class="course__instructor mb-45">
+                                 <h3>Other Instructors</h3>
+                                 <div class="course__instructor-wrapper d-md-flex align-items-center">
+                                    
+                                    {% for teacher in course.course_members.all %}
+                                    <div class="course__instructor-item d-flex align-items-center mr-70">
+                                       <div class="course__instructor-thumb mr-20">
+                                          <img src="{{ teacher.member.avatar.url }}" alt="{{ teacher.member.name }}'s avatar">
+                                       </div>
+                                       <div class="course__instructor-content">
+                                          <h3>{{ teacher.member.name }}</h3>
+                                          <p>{{ teacher.member.designation|default_if_none:"Teacher" }}</p>
+                                       </div>
+                                    </div>
+                                    {% endfor %}
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="tab-pane fade" id="curriculum" role="tabpanel" aria-labelledby="curriculum-tab">
+                           <div class="course__curriculum">
+                           {% if course|already_enrolled:request.user %}
+                           {% for cw in course.course_weeks.all %}
+                           <div class="accordion" id="course__accordion">
+                              <div class="accordion-item mb-50">
+                                 <h2 class="accordion-header" id="week-01">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#week-01-content" aria-expanded="true" aria-controls="week-01-content">
+                                    Week {{ cw.week }}
+                                    </button>
+                                 </h2>
+                                 <div id="week-01-content" class="accordion-collapse collapse show" aria-labelledby="week-01" data-bs-parent="#course__accordion">
+                                    <div class="accordion-body">
+                                       {% for cc in cw.weekly_course_contents.all %}
+                                       <div class="course__curriculum-content d-sm-flex justify-content-between align-items-center">
+                                          <div class="course__curriculum-info">
+                                             {% with content=cc.content  %}
+                                             {% if content.content_type == 'READING' %}
+                                                <i class="fa-light fa-file"></i>
+                                                <h3> <span> Reading:</span>
+                                             {% elif content.content_type == 'VIDEO' %}
+                                                <i class="fa-light fa-video"></i>
+                                                <h3> <span> Video: </span>
+                                             {% elif content.content_type == 'AUDIO' %}
+                                                <i class="fa-light fa-headphones"></i>
+                                                <h3><span> Audio:</span>
+                                             {% endif %}
+                                             <a href="{{ content.file.url }}" download style="color: blue;"> {{ content.title }}</a></h3>
+                                          </div>
+                                          <div class="course__curriculum-meta">
+                                             <span class="time"> <i class="icon_clock_alt"></i> {{ content.length }} minute{{ content.length|pluralize }}</span>
+                                             <span class="question">{{ content.questions }} question{{ content.questions|pluralize }}</span>
+                                          </div>
+                                          {% endwith %}
+                                       </div>
+                                       {% endfor %}
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           {% empty %}
+                           <div>
+                              <h3 style="color: #ce9936;">Curriculum coming soon!</h3>
+                           </div>
+                           {% endfor %}
+                           {% else %}
+                           <!-- for unenrolled users, don't provide a download link -->
+                           {% for cw in course.course_weeks.all %}
+                           <div class="accordion" id="course__accordion">
+                              <div class="accordion-item mb-50">
+                                 <h2 class="accordion-header" id="week-01">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#week-01-content"
+                                       aria-expanded="true" aria-controls="week-01-content">
+                                       Week {{ cw.week }}
+                                    </button>
+                                 </h2>
+                                 <div id="week-01-content" class="accordion-collapse collapse show" aria-labelledby="week-01"
+                                    data-bs-parent="#course__accordion">
+                                    <div class="accordion-body">
+                                       {% for cc in cw.weekly_course_contents.all %}
+                                       <div class="course__curriculum-content d-sm-flex justify-content-between align-items-center">
+                                          <div class="course__curriculum-info">
+                                             {% with content=cc.content %}
+                                             {% if content.content_type == 'READING' %}
+                                             <i class="fa-light fa-file"></i>
+                                             <h3> <span> Reading:</span>
+                                                {% elif content.content_type == 'VIDEO' %}
+                                                <i class="fa-light fa-video"></i>
+                                                <h3> <span> Video: </span>
+                                                   {% elif content.content_type == 'AUDIO' %}
+                                                   <i class="fa-light fa-headphones"></i>
+                                                   <h3><span> Audio:</span>
+                                                      {% endif %}
+                                                      {{ content.title }}</a>
+                                                   </h3>
+                                          </div>
+                                          <div class="course__curriculum-meta">
+                                             <span class="time"> <i class="icon_clock_alt"></i> {{ content.length }} minute{{ content.length|pluralize }}</span>
+                                             <span class="question">{{ content.questions }} question{{ content.questions|pluralize }}</span>
+                                          </div>
+                                          {% endwith %}
+                                       </div>
+                                       {% endfor %}
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           {% empty %}
+                           <div>
+                              <h3 style="color: #ce9936;">Curriculum coming soon!</h3>
+                           </div>
+                           {% endfor %}
+                           {% endif %}
+                           </div>
+                        </div>
+                        <div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="review-tab">
+                           <div class="course__review">
+                              <h3>Reviews</h3>
+                              <div class="course__review-rating mb-50">
+                                 <div class="row g-0">
+                                    <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-4">
+                                       <div class="course__review-rating-info grey-bg-2 text-center">
+                                          <h5>{{ course.avg_rating|floatformat:"1" }}</h5>
+                                          <ul>
+                                             <li><i class="fa{% if course.avg_rating > 0 %}-solid {% elif course.avg_rating < 1 %}-regular {% endif %} fa-star"></i></li>
+                                             <li><i class="fa{% if course.avg_rating > 1 %}-solid {% elif course.avg_rating < 2 %}-regular {% endif %} fa-star"></i></li>
+                                             <li><i class="fa{% if course.avg_rating > 2 %}-solid {% elif course.avg_rating < 3 %}-regular {% endif %} fa-star"></i></li>
+                                             <li><i class="fa{% if course.avg_rating > 3 %}-solid {% elif course.avg_rating < 4 %}-regular {% endif %} fa-star"></i></li>
+                                             <li><i class="fa{% if course.avg_rating > 4 %}-solid {% elif course.avg_rating < 5 %}-regular {% endif %} fa-star"></i></li>
+                                          </ul>
+                                          <p>Course Rating</p>
+                                       </div>
+                                    </div>
+                                    <div class="col-xxl-8 col-xl-8 col-lg-8 col-md-8 col-sm-8">
+                                       <div class="course__review-details grey-bg-2">
+                                          <h5>Detailed Rating</h5>
+                                          <div class="course__review-content mb-20">
+                                             {% for r in rating_range %}
+                                             <div class="course__review-item d-flex align-items-center justify-content-between">
+                                                <div class="course__review-text">
+                                                   <span>{{ r }} stars</span>
+                                                </div>
+                                                <div class="course__review-progress">
+                                                   <div class="single-progress" data-width="{{ course.id|detailed_rating:r }}%"></div>
+                                                </div>
+                                                <div class="course__review-percent">
+                                                   <h5>{{ course.id|detailed_rating:r }}%</h5>
+                                                </div>
+                                             </div>
+                                             {% endfor %}
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="course__comment mb-75">
+                                 <h3 class="course__comment-title">{{ reviews.count }} Comment{{ reviews.count|pluralize }}</h3>
+
+                                 <ul>
+                                    
+                                    {% for review in reviews %}
+                                    <li>
+                                       <div class="course__comment-box ">
+                                          <div class="course__comment-thumb float-start">
+                                             <img src="{{ review.user.avatar.url }}" alt="commenter image">
+                                          </div>
+                                          <div class="course__comment-content">
+                                             <div class="course__comment-wrapper ml-70 fix">
+                                                <div class="course__comment-info float-start">
+                                                   <h4>{{ review.user.name|title }}</h4>
+                                                   <span>{{ review.created|date:"F d, Y"}}</span>
+                                                </div>
+                                                <div class="course__comment-rating float-start float-sm-end">
+                                                   <ul>
+                                                      <li><i class="fa{% if review.rating > 0 %}-solid {% elif review.rating < 1 %}-regular {% endif %} fa-star"></i></li>
+                                                      <li><i class="fa{% if review.rating > 1 %}-solid {% elif review.rating < 2 %}-regular {% endif %} fa-star"></i></li>
+                                                      <li><i class="fa{% if review.rating > 2 %}-solid {% elif review.rating < 3 %}-regular {% endif %} fa-star"></i></li>
+                                                      <li><i class="fa{% if review.rating > 3 %}-solid {% elif review.rating < 4 %}-regular {% endif %} fa-star"></i></li>
+                                                      <li><i class="fa{% if review.rating > 4 %}-solid {% elif review.rating < 5 %}-regular {% endif %} fa-star"></i></li>
+                                                   </ul>
+                                                </div>
+                                             </div>
+                                             <div class="course__comment-text ml-70">
+                                                <p>{{ review.comment }}</p>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </li>
+                                    {% endfor %}
+                                 </ul>
+                              </div>
+                              <div class="course__form">
+                                 <h3 class="course__form-title">Write a Review</h3>
+                                 <div class="course__form-inner">
+                                    <form action="{% url 'course_review' course.slug %}" method="post">
+                                       {% csrf_token %}
+                                       <div class="row">
+                                          <div class="col-xxl-12">
+                                             <div class="course__form-input">
+                                                <input name="title" type="text" value="{{ review.title }}" placeholder="Review Title" required>
+                                             </div>
+                                          </div>
+                                          <div class="col-xxl-12">
+                                             <div class="course__form-input">
+                                                   <div class="rating">
+                                                      <input type="radio" name="rating" value="5" id="5" required><label for="5">☆</label>
+                                                      <input type="radio" name="rating" value="4" id="4" required><label for="4">☆</label>
+                                                      <input type="radio" name="rating" value="3" id="3" required><label for="3">☆</label>
+                                                      <input type="radio" name="rating" value="2" id="2" required><label for="2">☆</label>
+                                                      <input type="radio" name="rating" value="1" id="1" required><label for="1">☆</label>
+                                                      <span>Rating : </span>
+                                                   </div>
+                                                <textarea name="comment" placeholder="Review Summary" required>{{ review.comment }}</textarea>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <div class="row">
+                                          <div class="col-xxl-12">
+                                             <div class="course__form-btn mt-10 mb-55">
+                                                <button type="submit" class="tp-btn">Submit Review</button>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </form>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="tab-pane fade" id="member" role="tabpanel" aria-labelledby="member-tab">
+                           <div class="course__member mb-45">
+                              
+                              {% for teacher in course_members %}
+                              {% with t=teacher.member %}
+                              <div class="course__member-item">
+                                 <div class="row align-items-center">
+                                    <div class="col-xxl-5 col-xl-5 col-lg-5 col-md-5 col-sm-6">
+                                       <div class="course__member-thumb d-flex align-items-center">
+                                          <img src="{{ t.avatar.url }}" alt="{{ t.name }}'s image ">
+                                          <div class="course__member-name ml-20">
+                                             <h5>{{ t.name }}</h5>
+                                             <span>{{ t.designation|default_if_none:"" }}</span>
+                                          </div>
+                                       </div>
+                                    </div>
+                                    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-4">
+                                       <div class="course__member-info pl-45">
+                                          {% with  ct=t.core_courses.count  %}
+                                          <h5>{{ ct }}</h5>
+                                          <span>Core Course{{ ct|pluralize }}</span>
+                                          {% endwith %}
+                                       </div>
+                                    </div>
+                                    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-4">
+                                       <div class="course__member-info pl-70">
+                                          <h5>{{ t.teacher_reviews.count }}</h5>
+                                          <span>Review{{ t.teacher_reviews.count|pluralize }}</span>
+                                       </div>
+                                    </div>
+                                    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-2 col-sm-2 col-4">
+                                       <div class="course__member-info pl-85">
+                                          <h5>{{ teacher.avg_rating|floatformat:"1"|default:"0" }}</h5>
+                                          <span>Rating</span>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              {% endwith %}
+                              {% endfor %}
+                           </div>
+                        </div>
+                        <div class="course__share">
+                           <h3>Share :</h3>
+                           <ul>
+                              <li><a href="#" class="fb" ><i class="fa-brands fa-facebook-f"></i></a></li>
+                              <li><a href="#" class="tw" ><i class="fa-brands fa-twitter"></i></a></li>
+                              <li><a href="#" class="pin" ><i class="fa-brands fa-pinterest-p"></i></a></li>
+                           </ul>
+                        </div>
+                        </div>
+                  </div>
+                  <div class="course__related">
+                     <div class="row">
+                        <div class="col-xxl-12">
+                           <div class="section__title-wrapper mb-40">
+                              <h2 class="section__title">Related Course</h2>
+                              <p>Discover more related courses and increase you knowledge base. Join your peers and learn together.</p>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-xxl-12">
+                           <div class="course__slider swiper-container pb-60">
+                              <div class="swiper-wrapper">
+                                 
+                                 {% for course in related_courses %}
+                                 <div class="course__item-2 swiper-slide transition-3 white-bg mb-30 fix">
+                                    <div class="course__thumb-2 w-img fix">
+                                       <a href="{{ course.get_absolute_url }}">
+                                          <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}'s image">
+                                       </a>
+                                    </div>
+                                    <div class="course__content-2">
+                                       <div class="course__top-2 d-flex align-items-center justify-content-between">
+                                          <div class="course__tag-2">
+                                             <a href="{{ course.category.get_absolute_url }}">{{ course.category }}</a>
+                                          </div>
+                                          <div class="course__price-2">
+                                             <span>{{ course.price|floatformat:"0"|currency }}</span>
+                                          </div>
+                                       </div>
+                                       <h3 class="course__title-2">
+                                          <a href="{{ course.get_absolute_url }}">{{ course.title }}</a>
+                                       </h3>
+                                       <div class="course__bottom-2 d-flex align-items-center justify-content-between">
+                                          <div class="course__action">
+                                             <ul>
+                                                <li>
+                                                   <div class="course__action-item d-flex align-items-center">
+                                                      <div class="course__action-icon mr-5">
+                                                         <span>
+                                                            <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                               <path d="M5.00004 5.5833C6.28592 5.5833 7.32833 4.5573 7.32833 3.29165C7.32833 2.02601 6.28592 1 5.00004 1C3.71416 1 2.67175 2.02601 2.67175 3.29165C2.67175 4.5573 3.71416 5.5833 5.00004 5.5833Z" stroke="#5F6160" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                               <path d="M9 11.0001C9 9.22632 7.20722 7.79175 5 7.79175C2.79278 7.79175 1 9.22632 1 11.0001" stroke="#5F6160" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                                            </svg>
+                                                         </span>
+                                                      </div>
+                                                      <div class="course__action-content">
+                                                         <span>{{ course|student_count|default_if_none:"0" }}</span>
+                                                      </div>
+                                                   </div>
+                                                </li>
+                                                <li>
+                                                   <div class="course__action-item d-flex align-items-center">
+                                                      <div class="course__action-icon mr-5">
+                                                         <span>
+                                                            <svg width="14" height="12" viewBox="0 0 14 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                               <path d="M9.01232 5.95416C9.01232 7.06709 8.11298 7.96642 7.00006 7.96642C5.88713 7.96642 4.98779 7.06709 4.98779 5.95416C4.98779 4.84123 5.88713 3.94189 7.00006 3.94189C8.11298 3.94189 9.01232 4.84123 9.01232 5.95416Z" stroke="#5F6160" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                               <path d="M7 10.6026C8.98416 10.6026 10.8334 9.43342 12.1206 7.40991C12.6265 6.61737 12.6265 5.28523 12.1206 4.49269C10.8334 2.46919 8.98416 1.30005 7 1.30005C5.01584 1.30005 3.16658 2.46919 1.87941 4.49269C1.37353 5.28523 1.37353 6.61737 1.87941 7.40991C3.16658 9.43342 5.01584 10.6026 7 10.6026Z" stroke="#5F6160" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                            </svg>
+                                                         </span>
+                                                      </div>
+                                                      <div class="course__action-content">
+                                                         <span>{{ course.course_hits.count}}</span>
+                                                      </div>
+                                                   </div>
+                                                </li>
+                                                <li>
+                                                   <div class="course__action-item d-flex align-items-center">
+                                                      <div class="course__action-icon mr-5">
+                                                         <span>
+                                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                               <path d="M6.86447 1.72209L7.74447 3.49644C7.86447 3.74343 8.18447 3.98035 8.45447 4.02572L10.0495 4.29288C11.0695 4.46426 11.3095 5.2103 10.5745 5.94625L9.33447 7.19636C9.12447 7.40807 9.00947 7.81637 9.07447 8.10873L9.42947 9.65625C9.70947 10.8812 9.06447 11.355 7.98947 10.7148L6.49447 9.82259C6.22447 9.66129 5.77947 9.66129 5.50447 9.82259L4.00947 10.7148C2.93947 11.355 2.28947 10.8761 2.56947 9.65625L2.92447 8.10873C2.98947 7.81637 2.87447 7.40807 2.66447 7.19636L1.42447 5.94625C0.694466 5.2103 0.929466 4.46426 1.94947 4.29288L3.54447 4.02572C3.80947 3.98035 4.12947 3.74343 4.24947 3.49644L5.12947 1.72209C5.60947 0.759304 6.38947 0.759304 6.86447 1.72209Z" stroke="#5F6160" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                                            </svg>
+                                                         </span>
+                                                      </div>
+                                                      <div class="course__action-content">
+                                                         <span>{{ course.avg_rating|floatformat:"1"|default_if_none:"0" }}</span>
+                                                      </div>
+                                                   </div>
+                                                </li>
+                                             </ul>
+                                          </div>
+                                          <div class="course__tutor-2">
+                                             <a href="{{ course.owner.get_absolute_url }}">
+                                                <img src="{{ course.owner.avatar.url }}" alt="{{ course.title }}'s tutor image">
+                                             </a>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 {% endfor %}
+                              </div>
+                              <!-- Add Pagination -->
+                              <div class="swiper-pagination"></div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-xxl-4 col-xl-4 col-lg-4">
+               <div class="course__sidebar pl-70 p-relative">
+                  <div class="course__shape">
+                     <img class="course-dot" src="{% static '/img/course/course-dot.png' %}" alt="">
+                  </div>
+                  <div class="course__sidebar-widget-2 white-bg mb-20">
+                     <div class="course__video">
+                        <div class="course__video-thumb w-img mb-25">
+                           <img src="{% static '/img/course/video/course-video.jpeg' %}" alt="">
+                           <div class="course__video-play"> 
+                              <a href="https://www.youtube.com/watch?v=Zv11L-ZfrSg" class="play-btn popup-video"> <i class="fas fa-play"></i> </a>
+                           </div>
+                        </div>
+                        <div class="course__video-meta mb-25 d-flex align-items-center justify-content-between">
+                           <div class="course__video-price">
+                              <h5>{{ course.price|floatformat:"0"|currency}}<span>
+                              </h5>
+
+                           {% if course.old_price > course.price %}
+                              <h5 class="old-price">{{ course.old_price|floatformat:"0"|currency }}</h5>
+                           </div>
+                              <div class="course__video-discount">
+                                 <span>{{ course.discount }}% OFF</span>
+                              </div>
+                           {% else %}
+                           </div>
+                           {% endif %}
+                        </div>
+                        <div class="course__video-content mb-35">
+                           <ul>
+                              <li class="d-flex align-items-center">
+                                 <div class="course__video-icon">
+                                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve">
+                                       <path class="st0" d="M2,6l6-4.7L14,6v7.3c0,0.7-0.6,1.3-1.3,1.3H3.3c-0.7,0-1.3-0.6-1.3-1.3V6z"/>
+                                       <polyline class="st0" points="6,14.7 6,8 10,8 10,14.7 "/>
+                                    </svg>
+                                 </div>
+                                 <div class="course__video-info">
+                                    <h5><span>Instructor :</span> {{ course.owner.name|title }}</h5>
+                                 </div>
+                              </li>
+                              <li class="d-flex align-items-center">
+                                 <div class="course__video-icon">
+                                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+                                       
+                                       <path class="st0" d="M4,19.5C4,18.1,5.1,17,6.5,17H20"/>
+                                       <path class="st0" d="M6.5,2H20v20H6.5C5.1,22,4,20.9,4,19.5v-15C4,3.1,5.1,2,6.5,2z"/>
+                                    </svg>
+                                 </div>
+                                 <div class="course__video-info">
+                                    <h5><span>Lecture{{ course.lessons|pluralize}} :</span>{{ course.lessons }}</h5>
+                                 </div>
+                              </li>
+                              <li class="d-flex align-items-center">
+                                 <div class="course__video-icon">
+                                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve">
+                                       <circle class="st0" cx="8" cy="8" r="6.7"/>
+                                       <polyline class="st0" points="8,4 8,8 10.7,9.3 "/>
+                                    </svg>
+                                 </div>
+                                 <div class="course__video-info">
+                                    <h5><span>Duration :</span>{{ course.number_of_weeks }} week{{ course.number_of_weeks|pluralize }}</h5>
+                                 </div>
+                              </li>
+                              <li class="d-flex align-items-center">
+                                 <div class="course__video-icon">
+                                    <svg>
+                                       <path class="st0" d="M13.3,14v-1.3c0-1.5-1.2-2.7-2.7-2.7H5.3c-1.5,0-2.7,1.2-2.7,2.7V14"/>
+                                       <circle class="st0" cx="8" cy="4.7" r="2.7"/>
+                                    </svg>
+                                 </div>
+                                 <div class="course__video-info">
+                                    <h5><span>Enrolled :</span> 
+                                       {{ course|student_count|default_if_none:"0" }}
+                                    </h5>
+                                 </div>
+                              </li>
+                              <li class="d-flex align-items-center">
+                                 <div class="course__video-icon">
+                                    <svg>
+                                       <circle class="st0" cx="8" cy="8" r="6.7"/>
+                                       <line class="st0" x1="1.3" y1="8" x2="14.7" y2="8"/>
+                                       <path class="st0" d="M8,1.3c1.7,1.8,2.6,4.2,2.7,6.7c-0.1,2.5-1,4.8-2.7,6.7C6.3,12.8,5.4,10.5,5.3,8C5.4,5.5,6.3,3.2,8,1.3z"/>
+                                    </svg>
+                                 </div>
+                                 <div class="course__video-info">
+                                    <h5><span>Language :</span>{{ course.language }}</h5>
+                                 </div>
+                              </li>
+                           </ul>
+                        </div>
+                        
+                        {% if not course|already_enrolled:request.user %}
+                        <div class="course__payment mb-35">
+                           <h3>Payment:</h3>
+                           <a href="#">
+                              <img src="{% static '/img/course/payment/payment-1.png' %}" alt="payment methods">
+                           </a>
+                        </div>
+                        <div class="course__enroll-btn">
+                           {% if course|is_in_cart:request.session.cart %}
+                              <a class="tp-btn w-100 text-center" href="{% url 'cart' %}">Go to Cart</a>
+                           {% else %}
+                           <form action="{% url 'add_to_cart' %}" method="get">
+                              <input hidden type="text" value="{{ course.pk }}" name="course_id">
+                              <button class="tp-btn w-100 text-center" type="submit" data-bs-toggle="modal" data-bs-target="">Add to Cart</button>
+                           </form>
+                           {% endif %}
+                        </div>
+                        <br>
+                        <div class="course__enroll-btn">
+                           <input hidden type="text" value="{{ course.id|silently_add_to_cart:request.session }}" name="course_id">
+                           <button type="submit" class="tp-btn w-100 text-center" data-bs-toggle="modal" data-bs-target="#course_enroll_modal">Enroll <i class="far fa-arrow-right"></i></button>
+                        </div>
+                        {% endif %}
+                     </div>
+                  </div>
+                  <div class="course__sidebar-widget-2 white-bg mb-20">
+                     <div class="course__sidebar-course">
+                        <h3 class="course__sidebar-title">Related courses</h3>
+                        <ul>
+                           {% for course in related_courses %}
+                           <li>
+                              <div class="course__sm d-flex align-items-center mb-30">
+                                 <div class="course__sm-thumb mr-20">
+                                    <a href="{{ course.get_absolute_url }}">
+                                       <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}'s image">
+                                    </a>
+                                 </div>
+                                 <div class="course__sm-content">
+                                    <div class="course__sm-rating">
+                                       <ul>
+                                          <li><i
+                                                class="fa{% if course.avg_rating > 0 %}-solid {% elif course.avg_rating < 1 %}-regular {% endif %} fa-star"></i>
+                                          </li>
+                                          <li><i
+                                                class="fa{% if course.avg_rating > 1 %}-solid {% elif course.avg_rating < 2 %}-regular {% endif %} fa-star"></i>
+                                          </li>
+                                          <li><i
+                                                class="fa{% if course.avg_rating > 2 %}-solid {% elif course.avg_rating < 3 %}-regular {% endif %} fa-star"></i>
+                                          </li>
+                                          <li><i
+                                                class="fa{% if course.avg_rating > 3 %}-solid {% elif course.avg_rating < 4 %}-regular {% endif %} fa-star"></i>
+                                          </li>
+                                          <li><i
+                                                class="fa{% if course.avg_rating > 4 %}-solid {% elif course.avg_rating < 5 %}-regular {% endif %} fa-star"></i>
+                                          </li>
+                                       </ul>
+                                    </div>
+                                    <h5><a href="{{ course.get_absolute_url }}">{{ course.category }}</a></h5>
+                                    <div class="course__sm-price">
+                                       <span>{{ course.price|currency }}</span>
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                           {% endfor %}
+                        </ul>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- course area end -->
+
+   <!-- course enroll popup start -->
+   <div class="course__popup">
+      <!-- Modal -->
+      <div class="modal fade" id="course_enroll_modal" tabindex="-1" aria-labelledby="course_enroll_modal" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+               <div class="course__popup-wrapper p-relative">
+                  <div class="course__popup-close">
+                     <button type="button" class="course__popup-close-btn" data-bs-toggle="modal" data-bs-target="#course_enroll_modal"><i class="fa-light fa-xmark"></i></button>
+                  </div>
+                  <div class="course__popup-top d-flex align-items-start mb-40">
+                     <div class="course__popup-thumb mr-20">
+                        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}'s image">
+                     </div>
+                     <div class="course__popup-content">
+                        <h3 class="course__popup-title">
+                           <a href="{{ course.get_absolute_url }}">{{ course.title }}</a>
+                        </h3>
+                        <div class="course__sm-rating">
+                           <ul>
+                              <li><i
+                                    class="fa{% if course.avg_rating > 0 %}-solid {% elif course.avg_rating < 1 %}-regular {% endif %} fa-star"></i>
+                              </li>
+                              <li><i
+                                    class="fa{% if course.avg_rating > 1 %}-solid {% elif course.avg_rating < 2 %}-regular {% endif %} fa-star"></i>
+                              </li>
+                              <li><i
+                                    class="fa{% if course.avg_rating > 2 %}-solid {% elif course.avg_rating < 3 %}-regular {% endif %} fa-star"></i>
+                              </li>
+                              <li><i
+                                    class="fa{% if course.avg_rating > 3 %}-solid {% elif course.avg_rating < 4 %}-regular {% endif %} fa-star"></i>
+                              </li>
+                              <li><i
+                                    class="fa{% if course.avg_rating > 4 %}-solid {% elif course.avg_rating < 5 %}-regular {% endif %} fa-star"></i>
+                              </li>
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="course__popup-info">
+                     <form action="{% url 'checkout' %}" method="post">
+                        {% csrf_token %}
+                        <div class="row gx-3">
+                           <div class="col-xl-12">
+                              {% if course.price > 0 %}
+                              <div class="course__popup-input">
+                                 <select name="payment_type" id="">
+                                    <option value="m_pesa" selected>M-Pesa</option>
+                                    <option value="paypal" disabled>PayPal</option>
+                                    <option value="credit_card" disabled>Credit Card</option>
+                                 </select>
+                              </div>
+                           </div>
+                           <div class="col-xxl-12">
+                              <div class="course__popup-input">
+                                 <input type="text" name="phone" placeholder="M-Pesa Number" required>
+                                 <span class="course__popup-input-icon"><i class="fa-light fa-phone"></i></span>
+                              </div>
+                           </div>
+                           {% endif %}
+                           <div class="col-xxl-12">
+                              <div class="course__popup-btn">
+                                 <button type="submit" class="tp-btn w-100">Enroll</button>
+                              </div>
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- course enroll popup end -->
+</main>
+{% endblock content %}

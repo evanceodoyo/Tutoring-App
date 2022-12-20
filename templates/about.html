@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load filters %}
+
+{% block content %}
+<main>
+   <!-- breadcrumb area start -->
+   <section class="breadcrumb__area include-bg pt-150 pb-150 breadcrumb__overlay" data-background="{% static '/img/breadcrumb/breadcrumb-bg-1.jpg' %}">
+      <div class="container">
+         <div class="row">
+            <div class="col-xxl-12">
+               <div class="breadcrumb__content text-center p-relative z-index-1">
+                  <h3 class="breadcrumb__title">About</h3>
+                  <div class="breadcrumb__list">
+                     <span><a href="{% url 'home' %}">Home</a></span>
+                     <span class="dvdr"><i class="fa-regular fa-angle-right"></i></span>
+                     <span>About</span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- breadcrumb area end -->
+
+   <!-- about area start -->
+   <section class="about__area pt-120 pb-120 p-relative">
+      <div class="container">
+         <div class="row">
+            <div class="col-xxl-7 col-xl-7 col-lg-7">
+               <div class="about__thumb-wrapper d-sm-flex mr-20 p-relative">
+                  <div class="about__shape">
+                     <img class="about__shape-1 d-none d-sm-block" src="{% static '/img/about/about-shape-1.png' %}" alt="">
+                     <img class="about__shape-2 d-none d-sm-block" src="{% static '/img/about/about-shape-2.png' %}" alt="">
+                     <img class="about__shape-3" src="{% static '/img/about/about-shape-3.png' %}" alt="">
+                  </div>
+                  <div class="about__thumb-left mr-10">
+                     <div class="about__thumb-1 mb-10">
+                        <img src="{% static '/img/about/about-1.jpg' %}" alt="">
+                     </div>
+                     <div class="about__thumb-1 mb-10 text-end">
+                        <img src="{% static '/img/about/about-3.jpg' %}" alt="">
+                     </div>
+                  </div>
+                  <div class="about__thumb-2 mb-10">
+                     <img src="{% static '/img/about/about-2.jpg' %}" alt="">
+                  </div>
+               </div>
+            </div>
+            <div class="col-xxl-5 col-xl-5 col-lg-5">
+               <div class="about__content pl-70 pr-25">
+                  <div class="section__title-wrapper mb-15">
+                     <span class="section__title-pre">About Educal</span>
+                     <h2 class="section__title">Degrees in Various academic Didciplines</h2>
+                  </div>
+                  <p>Not only can university offer an environment rich in our social an cultural experiences.</p>
+
+                  <div class="about__list mb-40">
+                     <ul>
+                        <li><i class="fa-solid fa-check"></i> Access to all our courses</li>
+                        <li><i class="fa-solid fa-check"></i> Learn the latest skills</li>
+                        <li><i class="fa-solid fa-check"></i> Upskill your organization</li>
+                     </ul>
+                  </div>
+
+                  <div class="about__btn">
+                     <a href="#" class="tp-btn tp-btn-2">Read more</a>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- about area end -->
+
+   <!-- course area start -->
+   <section class="course__area pt-115 pb-90 grey-bg-3">
+      <div class="container">
+         <div class="row">
+            <div class="col-xxl-12">
+               <div class="section__title-wrapper text-center mb-60">
+                  <span class="section__title-pre">Top Courses</span>
+                  <h2 class="section__title section__title-44">Our Featured Courses</h2>
+                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing aelit, sed do eiusmod</p>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            
+            {% for course in courses %}
+            <div class="col-xxl-4 col-xl-4 col-lg-6 col-md-6">
+               <div class="course__item white-bg transition-3 mb-30">
+                  <div class="course__thumb w-img fix">
+                     <a href="{{ course.get_absolute_url }}">
+                        <img src="{{ course.thumbnail.url }}" alt="">
+                     </a>
+                  </div>
+                  <div class="course__content p-relative">
+                     <div class="course__price">
+                        <span>{{ course.price|currency }}</span>
+                     </div>
+                     <div class="course__tag">
+                        <a href="{{ course.category.get_absolute_url }}">{{ course.category }}</a>
+                     </div>
+                     <h3 class="course__title">
+                        <a href="course-details.html">University seminar series global.</a>
+                     </h3>
+                     <p>A beginner’s guide to designing or renovating interior spaces that pop.</p>
+
+                     <div class="course__bottom d-sm-flex align-items-center justify-content-between">
+                        <div class="course__tutor">
+                           <a href="{{ course.owner.get_absolute_url }}"><img src="{{ course.owner.avatar.url }}" alt="">{{ course.owner.name|title }}</a>
+                        </div>
+                        <div class="course__lesson">
+                           <a href="#"><svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M1 12.2V4.49999C1 1.7 1.70588 1 4.52941 1H9.47059C12.2941 1 13 1.7 13 4.49999V11.5C13 11.598 13 11.696 12.9929 11.794" stroke="#49535B" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M3.01176 10.0999H13V12.5498C13 13.9008 11.8918 14.9998 10.5294 14.9998H3.47059C2.10824 14.9998 1 13.9008 1 12.5498V12.0948C1 10.9959 1.90353 10.0999 3.01176 10.0999Z" stroke="#49535B" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M4.17647 4.5H9.82353" stroke="#49535B" stroke-linecap="round" stroke-linejoin="round"/>
+                              <path d="M4.17647 6.94995H7.70589" stroke="#49535B" stroke-linecap="round" stroke-linejoin="round"/>
+                              </svg>
+                              12 Lessons
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            {% endfor %}
+         </div>
+      </div>
+   </section>
+   <!-- course area end -->
+
+   <!-- team area start -->
+   <section class="team__area pt-115">
+      <div class="container">
+         <div class="row align-items-end">
+            <div class="col-xxl-6 col-xl-6 col-lg-6">
+               <div class="section__title-wrapper-2 mb-40">
+                  <span class="section__title-pre-2">Top Instructors</span>
+                  <h3 class="section__title-2">Become A Instruction Instructor</h3>
+               </div>
+            </div>
+            <div class="col-xxl-6 col-xl-6 col-lg-6">
+               <div class="team__wrapper mb-45 pl-70">
+                  <p>Do you have the skills required to make an impact through technology? Apply to join our team now! </p>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            {% for ct in course_teachers %}
+            {% with tr=ct.owner  %}
+            <div class="col-xxl-3 col-xl-3 col-lg-4 col-md-6">
+               <div class="team__item text-center mb-40">
+                  <div class="team__thumb">
+                     <div class="team__shape">
+                        <img src="{% static '/img/team/team-shape-2.png' %}" alt="">
+                     </div>
+                     <img src="{{ tr.avatar.url }}" alt="">
+                     <div class="team__social transition-3">
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fa-brands fa-pinterest-p"></i></a>
+                     </div>
+                  </div>
+                  <div class="team__content">
+                     <h3 class="team__title">
+                        <a href="{{ tr.get_absolute_url }}">{{ tr.name|title }}</a>
+                     </h3>
+                     <span class="team__designation">{{ tr.designation|default_if_none:"Teacher" }}</span>
+                  </div>
+               </div>
+            </div>
+            {% endwith %}
+            {% endfor %}
+         </div>
+      </div>
+   </section>
+   <!-- team area end -->
+
+   <!-- testimonial area start -->
+   <section class="testimonial__area pt-120 pb-120 fix">
+      <div class="container">
+         <div class="row">
+            <div class="col-xxl-12">
+               <div class="section__title-wrapper-2 mb-40 text-center">
+                  <span class="section__title-pre">Testimonials</span>
+                  <h3 class="section__title section__title-44">What our Students Say</h3>
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            <div class="col-xxl-12">
+               <div class="testimonial__slider">
+                  <div class="testimonial__active owl-carousel">
+                     {% for t in testimonials %}
+                        <div class="testimonial__item transition-3 text-center white-bg">
+                           <div class="testimonial__avater">
+                              <img src="{{ t.user.avatar.url }}" alt="author image">
+                           </div>
+                           <div class="testimonial__text">
+                              <q>{{ t.comment }}</q>
+                           </div>
+                           <div class="testimonial__avater-info mb-5">
+                              <h3>{{ t.user.name }}</h3>
+                              <h5 style="color: blue;"><i>on</i></h5>
+                              <span>{{ t.course.title }}</span>
+                           </div>
+                           <div class="testimonial__rating">
+                              <ul>
+                                 <li><i class="fa{% if t.rating > 0 %}-solid {% elif t.rating < 1 %}-regular {% endif %} fa-star"></i></li>
+                                 <li><i class="fa{% if t.rating > 1 %}-solid {% elif t.rating < 2 %}-regular {% endif %} fa-star"></i></li>
+                                 <li><i class="fa{% if t.rating > 2 %}-solid {% elif t.rating < 3 %}-regular {% endif %} fa-star"></i></li>
+                                 <li><i class="fa{% if t.rating > 3 %}-solid {% elif t.rating < 4 %}-regular {% endif %} fa-star"></i></li>
+                                 <li><i class="fa{% if t.rating > 4 %}-solid {% elif t.rating < 5 %}-regular {% endif %} fa-star"></i></li>
+                              </ul>
+                           </div>
+                        </div>
+                     {% endfor %}
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- testimonial area end -->
+
+   <!-- brand area start -->
+   <section class="brand__area pb-70">
+      <div class="container">
+         <div class="row">
+            <div class="col-xxl-4 col-xl-4 col-lg-4">
+               <div class="brand__wrapper">
+                  <div class="section__title-wrapper-2">
+                     <span class="section__title-pre">Join Our Community</span>
+                     <h3 class="section__title section__title-30">Who will you learn with?</h3>
+                  </div>
+                  <p>Get to interact with peers and walk the journey together.</p>
+                  <div class="brand__btn">
+                     <a href="{% url 'home' %}" class="tp-btn-5 tp-btn-6">Explore Our Courses</a>
+                  </div>
+               </div>
+            </div>
+            <div class="col-xxl-8 col-xl-8 col-lg-8">
+               <div class="brand__item-wrapper pl-100">
+                  <div class="row align-items-center">
+                     {% for sponsor in sponsors  %}
+                     <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 col-sm-4 col-6">
+                        <div class="brand__item text-center m-img mb-40">
+                           <img src="{{ sponsor.logo.url }}" alt="sponsor's image">
+                        </div>
+                     </div>
+                     {% endfor %}
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- brand area end -->
+</main>
+{% endblock content %}

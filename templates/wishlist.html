@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<main>
+
+   <!-- breadcrumb area start -->
+   <section class="breadcrumb__area include-bg pt-150 pb-150 breadcrumb__overlay" data-background="assets/img/breadcrumb/breadcrumb-bg-1.jpg">
+      <div class="container">
+         <div class="row">
+            <div class="col-xxl-12">
+               <div class="breadcrumb__content text-center p-relative z-index-1">
+                  <h3 class="breadcrumb__title">My Wishlist</h3>
+                  <div class="breadcrumb__list">
+                     <span><a href="{% url 'home' %}">Home</a></span>
+                     <span class="dvdr"><i class="fa-regular fa-angle-right"></i></span>
+                     <span>Wishlist</span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- breadcrumb area end -->
+
+   <!-- cart-area start -->
+   <section class="cart-area pt-120 pb-120">
+      <div class="container">
+         <div class="row">
+            <div class="col-12">
+                  <form action="#">
+                     <div class="table-content table-responsive">
+                        <table class="table">
+                              <thead>
+                                 <tr>
+                                    <th class="product-thumbnail">Images</th>
+                                    <th class="cart-product-name">Product</th>
+                                    <th class="product-price">Price</th>
+                                    <th class="product-quantity">Add to card</th>
+                                    <th class="product-remove">Remove</th>
+                                 </tr>
+                              </thead>
+                              <tbody>
+                                 <tr>
+                                    <td class="product-thumbnail"><a href="course-details.html"><img src="assets/img/course/cart/cart-1.jpg" alt=""></a></td>
+                                    <td class="product-name"><a href="course-details.html">University seminar series global.</a></td>
+                                    <td class="product-price"><span class="amount">$130.00</span></td>
+                                    <td class="product-add"> <button type="submit" class="tp-btn tp-btn-2">add to card </button></td>
+                                    <td class="product-remove"><a href="#"><i class="fa fa-times"></i></a></td>
+                                 </tr>
+                                 <tr>
+                                    <td class="product-thumbnail"><a href="course-details.html"><img src="assets/img/course/cart/cart-2.jpg" alt=""></a></td>
+                                    <td class="product-name"><a href="course-details.html">Web coding and apache basics</a></td>
+                                    <td class="product-price"><span class="amount">$120.50</span></td>
+                                    <td class="product-add"> <button type="submit" class="tp-btn tp-btn-2">add to card </button></td>
+                                    <td class="product-remove"><a href="#"><i class="fa fa-times"></i></a></td>
+                                 </tr>
+                              </tbody>
+                        </table>
+                     </div>
+                  </form>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- cart-area end -->
+</main>
+{% endblock content %}

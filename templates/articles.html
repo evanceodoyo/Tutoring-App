@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<main>
+
+   <!-- breadcrumb area start -->
+   <section class="breadcrumb__area include-bg pt-150 pb-150 breadcrumb__overlay" data-background="{% static '/img/breadcrumb/breadcrumb-bg-1.jpg' %}">
+      <div class="container">
+         <div class="row">
+            <div class="col-xxl-12">
+               <div class="breadcrumb__content text-center p-relative z-index-1">
+                  <h3 class="breadcrumb__title">Our Blog</h3>
+                  <div class="breadcrumb__list">
+                     <span><a href="{% url 'home' %}">Home</a></span>
+                     <span class="dvdr"><i class="fa-regular fa-angle-right"></i></span>
+                     <span>Blog</span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- breadcrumb area end -->
+
+   <!-- blog area start -->
+   <section class="blog__area pt-120">
+      <div class="container">
+         <div class="row">
+            <div class="col-xxl-8 col-xl-8 col-lg-8">
+               <div class="postbox__wrapper pr-20">
+                  
+                  {% for article in articles %}
+                  <article class="postbox__item format-image mb-50 transition-3">
+                     <div class="postbox__thumb w-img">
+                        <a href="{{ article.get_absolute_url }}">
+                           <img src="{{ article.thumbnail.url }}" alt="article image">
+                        </a>
+                     </div>
+                     <div class="postbox__content">
+                        <div class="postbox__meta">
+                           <span><i class="far fa-calendar-check"></i> {{ article.created|date:"F d, Y" }} </span>
+                           <span><a href="{{ article.author.get_absolute_url }}"><i class="far fa-user"></i> {{ article.author.name }}</a></span>
+                           
+                           {% with cc=article.comments.count %}
+                           <span><a href="#"><i class="fal fa-comments"></i> {{ cc }} Comment{{ cc|pluralize }}</a></span>
+                           {% endwith %}
+                        </div>
+                        <h3 class="postbox__title">
+                           <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+                        </h3>
+                        <div class="postbox__text">
+                           <p>{{ article.content|safe|truncatewords:60 }}</p>
+                        </div>
+                        <div class="postbox__read-more">
+                           <a href="{{ article.get_absolute_url }}" class="tp-btn">read more</a>
+                        </div>
+                     </div>
+                  </article>
+                  {% endfor %}
+
+                  {% if articles.has_other_pages %}
+                  <div class="row">
+                     <div class="col-xxl-12">
+                        <div class="basic-pagination">
+                           <nav>
+                              <ul>
+                                 {% if articles.has_previous %}
+                                 <li>
+                                    <a href="?page={{ articles.previous_page_number }}">
+                                       <i class="far fa-angle-left"></i>
+                                    </a>
+                                 </li>
+                                 {% else %}
+                                 <li>
+                                    <a role="link" aria-disabled="true">
+                                       <i class="far fa-angle-left"></i>
+                                    </a>
+                                 </li>
+                                 {% endif %}
+                                 
+                                 {% for i in articles.paginator.page_range %}
+                                    {% if articles.number == i %}
+                                    <li>
+                                       <span class="current">{{ i }}</span>
+                                    </li>
+                                    {% else %}
+                                    <li>
+                                       <a href="?page={{ i }}">{{ i }}</a>
+                                    </li>
+                                    {% endif %}
+                                 {% endfor %}
+                                 
+                                 {% if articles.has_next %}
+                                 <li>
+                                    <a href="?page={{ articles.next_page_number }}">
+                                       <i class="far fa-angle-right"></i>
+                                    </a>
+                                 </li>
+                                 {% else %}
+                                 <li>
+                                    <a role="link" aria-disabled="true">
+                                       <i class="far fa-angle-right"></i>
+                                    </a>
+                                 </li>
+                                 {% endif %}
+                              </ul>
+                              </nav>
+                        </div>
+                     </div>
+                  </div>
+                  {% endif %}
+               </div>
+            </div>
+            <div class="col-xxl-4 col-xl-4 col-lg-4">
+               <div class="blog__sidebar pl-70">
+                  <div class="sidebar__widget mb-60">
+                     <div class="sidebar__widget-content">
+                        <div class="sidebar__search p-relative">
+                           <form action="{% url 'article_search' %}" method="get">
+                              <input type="text" name="search" value="{{ query }}" placeholder="Search for articles...">
+                              <button type="submit"><i class="far fa-search"></i></button>
+                           </form>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="sidebar__widget mb-55">
+                     <div class="sidebar__widget-head mb-35">
+                        <h3 class="sidebar__widget-title">Recent posts</h3>
+                     </div>
+                     <div class="sidebar__widget-content">
+                        <div class="rc__post-wrapper">
+                           
+                           {% for article in articles|slice:"3" %}
+                           <div class="rc__post d-flex align-items-start">
+                              <div class="rc__thumb mr-20">
+                                 <a href="{{ article.get_absolute_url }}"><img src="{{ article.thumbnail.url }}" alt="article image"></a>
+                              </div>
+                              <div class="rc__content">
+                                 <div class="rc__meta">
+                                    <span>{{ article.created|date:"F d, Y" }}</span>
+                                 </div>
+                                 <h6 class="rc__title"><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h6>
+                              </div>
+                           </div>
+                           {% endfor %}
+
+                        </div>
+                     </div>
+                  </div>
+                  <div class="sidebar__widget mb-55">
+                     <div class="sidebar__widget-head mb-35">
+                        <h3 class="sidebar__widget-title">Category</h3>
+                     </div>
+                     <div class="sidebar__widget-content">
+                           <ul>
+                              {% for category in categories  %}
+                              <li><a href="{{ category.get_absolute_url }}">{{ category.title }} ({{ category.num_articles }})</a></li>
+                              {% endfor %}
+                           </ul>
+                     </div>
+                  </div>
+                  <div class="sidebar__widget mb-55">
+                     <div class="sidebar__widget-head mb-35">
+                        <h3 class="sidebar__widget-title">Tags</h3>
+                     </div>
+                     <div class="sidebar__widget-content">
+                        <div class="tagcloud">
+                           
+                           {% for tag in tags %}
+                           <a href="{{ tag.get_absolute_url }}">{{ tag.title }}</a>
+                           {% endfor %}
+                              
+                        </div>
+                     </div>
+                  </div>
+                  <div class="sidebar__widget mb-55">
+                     <div class="sidebar__banner w-img">
+                        <img src="{% static '/img/blog/banner/banner-1.jpg' %}" alt="banner">
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- blog area end -->
+</main>
+{% endblock content %}

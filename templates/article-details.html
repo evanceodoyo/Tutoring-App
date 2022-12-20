@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}      
+<main>
+
+   <!-- breadcrumb area start -->
+   <section class="breadcrumb__area include-bg pt-150 pb-150 breadcrumb__overlay" data-background="{% static '/img/breadcrumb/breadcrumb-bg-1.jpg' %}">
+      <div class="container">
+         <div class="row">
+            <div class="col-xxl-12">
+               <div class="breadcrumb__content text-center p-relative z-index-1">
+                  <h3 class="breadcrumb__title">Our Blog</h3>
+                  <div class="breadcrumb__list">
+                     <span><a href="{% url 'home' %}">Home</a></span>
+                     <span class="dvdr"><i class="fa-regular fa-angle-right"></i></span>
+                     <span>Blog</span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- breadcrumb area end -->
+
+   <!-- blog area start -->
+   <section class="blog__area pt-120 pb-120">
+      <div class="container">
+         <div class="row">
+            <div class="col-xxl-8 col-xl-8 col-lg-8">
+               <div class="postbox__wrapper postbox__details pr-20">
+                  <div class="postbox__item transition-3 mb-70">
+                     <div class="postbox__thumb m-img">
+                        <img src="{{ article.thumbnail.url }}" alt="article image">
+                     </div>
+                     <div class="postbox__content">
+                        <div class="postbox__meta">
+                           <span><i class="far fa-calendar-check"></i> {{ article.created|date:"F d, Y" }} </span>
+                           <span><a href="{{ article.author.get_absolute_url }}"><i class="far fa-user"></i> {{ article.author.name }}</a></span>
+                        {% with ct=comments.count %}
+                           <span><a href="#comments"><i class="fal fa-comments"></i> {{ ct }} Comment{{ ct|pluralize }}</a></span>
+                        </div>
+                        <h3 class="postbox__title">{{ article.title }}</h3>
+                        <div class="postbox__text mb-40">
+                           <p>{{ article.content|safe }}</p>
+                        </div>
+                     
+                        <div class="postbox__line"></div>
+                        <div class="postbox__meta-3 d-sm-flex align-items-center">
+                           <span>Tags :</span>
+                           <div class="tagcloud">
+                              
+                              {% for t in article.article_tags.all %}
+                              {% with tag=t.tag %}
+                              <a href="{{ tag.get_absolute_url }}">{{ tag.title }}</a>
+                              {% endwith %}
+                              {% endfor %}
+                     
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="latest-comments mb-65">
+                     <h3>{{ ct }} Comment{{ ct|pluralize }}</h3>
+                  {% endwith %}
+                     <ul id="comments">
+                        {% for comment in comments %}
+                           <li>
+                              <div class="comments-box grey-bg-2">
+                                 <div class="comments-info d-flex">
+                                       <div class="comments-avatar mr-20">
+                                             <img src="{{ comment.author.avatar.url }}" alt="author image">
+                                       </div>
+                                       <div class="avatar-name">
+                                          <h5>{{ comment.author.name|title }}</h5>
+                                          <span class="post-meta"> {{ comment.created|date:"F d, Y" }}</span>
+                                       </div>
+                                 </div>
+                                 <div class="comments-text ml-65">
+                                    <p>{{ comment.body }}</p>
+                                    <!-- <div class="comments-replay">
+                                       <a href="#">Reply</a>
+                                    </div> -->
+                                 </div>
+                              </div>
+                           </li>
+                           
+                           {% for reply in comment.replies.all %}
+                           <li class="children">
+                              <div class="comments-box grey-bg-2">
+                                 <div class="comments-info d-flex">
+                                       <div class="comments-avatar mr-20">
+                                             <img src="{{ reply.author.avatar.url }}" alt="reply author image">
+                                       </div>
+                                       <div class="avatar-name">
+                                          <h5>{{ reply.author.name|title }}</h5>
+                                          <span class="post-meta">{{ reply.created|date:"F d, Y" }} </span>
+                                       </div>
+                                 </div>
+                                 <div class="comments-text ml-65">
+                                    <p>{{ reply.body }}</p>
+                                    <div class="comments-replay">
+                                       <a href="#">Reply</a>
+                                    </div>
+                                 </div>
+                              </div>
+                           </li>
+                           {% endfor %}
+                        {% endfor %}
+                     </ul>
+                  </div>
+                  <div class="postbox__comment">
+                     <h3>Write a comment</h3>
+                     <form action="{% url 'post_comment' article.slug %}" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                           <div class="col-xxl-12">
+                              <div class="postbox__comment-input">
+                                 <input type="text" name="website" placeholder="Website (Optional)">
+                              </div>
+                           </div>
+                           <div class="col-xxl-12">
+                              <div class="postbox__comment-input">
+                                 <textarea name="body" placeholder="Enter your comment ..." required></textarea>
+                              </div>
+                           </div>
+                           <div class="col-xxl-12">
+                              <div class="postbox__comment-btn">
+                                 <button type="submit" class="tp-btn">Post Comment</button>
+                              </div>
+                           </div>
+                        </div>
+                     </form>
+                  </div>
+               </div>
+            </div>
+            <div class="col-xxl-4 col-xl-4 col-lg-4">
+               <div class="blog__sidebar pl-70">
+                  <div class="sidebar__widget mb-60">
+                     <div class="sidebar__widget-content">
+                        <div class="sidebar__search p-relative">
+                           <form action="{% url 'article_search' %}" method="get">
+                              <input name="search" type="text" value="{{ query }}" placeholder="Search for articles...">
+                              <button type="submit"><i class="far fa-search"></i></button>
+                           </form>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="sidebar__widget mb-55">
+                     <div class="sidebar__widget-head mb-35">
+                        <h3 class="sidebar__widget-title">Recent posts</h3>
+                     </div>
+                     <div class="sidebar__widget-content">
+                        <div class="rc__post-wrapper">
+                           
+                           {% for article in recent_articles %}
+                           <div class="rc__post d-flex align-items-start">
+                              <div class="rc__thumb mr-20">
+                                 <a href="{{ article.get_absolute_url }}"><img src="{{ article.thumbnail.url }}" alt=""></a>
+                              </div>
+                              <div class="rc__content">
+                                 <div class="rc__meta">
+                                    <span>{{ article.created|date:"F d, Y" }}</span>
+                                 </div>
+                                 <h6 class="rc__title"><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></h6>
+                              </div>
+                           </div>
+                           {% endfor %}
+                           
+                        </div>
+                     </div>
+                  </div>
+                  <div class="sidebar__widget mb-55">
+                     <div class="sidebar__widget-head mb-35">
+                        <h3 class="sidebar__widget-title">Category</h3>
+                     </div>
+                     <div class="sidebar__widget-content">
+                           <ul>
+                              
+                              {% for category in categories %}
+                              <li><a href="{{ category.get_absolute_url }}">{{ category.title }}  ({{ category.num_articles }})</a></li>
+                              {% endfor %}
+                                 
+                           </ul>
+                     </div>
+                  </div>
+                  <div class="sidebar__widget mb-55">
+                     <div class="sidebar__widget-head mb-35">
+                        <h3 class="sidebar__widget-title">Tags</h3>
+                     </div>
+                     <div class="sidebar__widget-content">
+                        <div class="tagcloud">
+                           
+                           {% for tag in tags %}
+                           <a href="{{ tag.get_absolute_url }}">{{ tag.title }}</a>
+                           {% endfor %}
+                              
+                        </div>
+                     </div>
+                  </div>
+                  <div class="sidebar__widget mb-55">
+                     <div class="sidebar__banner w-img">
+                        <img src="{% static '/img/blog/banner/banner-1.jpg' %}" alt="banner">
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <!-- blog area end -->
+</main>
+{% endblock content %}
