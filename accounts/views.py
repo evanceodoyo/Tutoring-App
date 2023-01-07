@@ -140,8 +140,7 @@ def passwordChange(request):
         if user := authenticate(
             request, username=user.email, password=current_password
         ):
-            # send_reset_email.delay(user) # worker does not execute
-            send_reset_email(user)
+            send_reset_email.delay(user.pk)
             logout(request)
             return redirect("password_reset_done")
         messages.error(request, "The current password entered is wrong.")
@@ -157,8 +156,7 @@ def passwordReset(request):
 
         try:
             user = User.objects.get(email=email)
-            # send_reset_email.delay(user) # worker does not execute
-            send_reset_email(user)
+            send_reset_email.delay(user.pk)
             return redirect("password_reset_done")
         except User.DoesNotExist:
             messages.info(

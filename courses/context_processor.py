@@ -17,7 +17,7 @@ def global_context_renderer(request):
         "address": "Kenyatta Avenue",
         "telephone": "+254712345678",
         "alternate_telephone": "",
-        "info_mail": "info@company.com",
-        "support_email": "support@company.com",
+        "info_mail": "info@codeafrik.com",
+        "support_email": "support@codeafrik.com",
         "years_since_established": days_since_established,
     }
