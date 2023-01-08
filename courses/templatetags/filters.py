@@ -2,6 +2,7 @@ from django import template
 from enroll.models import EnrolledCourse
 from courses.models import Course
 from django.db.models import Count, Q
+# from courses.tasks import astudent_count, adetailed_rating
 
 register = template.Library()
 
@@ -30,11 +31,11 @@ def total_amount(total):
 
 
 @register.filter("student_count")
-def student_count(course):
+def student_count(course_id):
     """
-    Count number of students  based on the enrolled courses.
+    Count number of students  based on the enrolled course.
     """
-    s_count = EnrolledCourse.objects.filter(course=course).aggregate(
+    s_count = EnrolledCourse.objects.filter(pk=course_id).aggregate(
         student_count=Count("student")
     )
     return s_count["student_count"]
@@ -52,13 +53,19 @@ def already_enrolled(course, user):
 
 @register.filter(name="detailed_rating")
 def detailed_rating(course_id, rating):
-    rating_count = Course.objects.annotate(
-        r_count=Count(
-            "course_reviews__rating", filter=Q(course_reviews__rating__exact=rating)
-        ),
-        total_count=Count("course_reviews__rating"),
-    ).get(pk=course_id)
-    return f"{(rating_count.r_count / rating_count.total_count) * 100:.2f}"
+    """
+    Detailed rating for each course.
+    """
+    try:
+        rating_count = Course.objects.annotate(
+            r_count=Count(
+                "course_reviews__rating", filter=Q(course_reviews__rating__exact=rating)
+            ),
+            total_count=Count("course_reviews__rating"),
+        ).get(pk=course_id)
+        return f"{(rating_count.r_count / rating_count.total_count) * 100:.2f}"
+    except ZeroDivisionError:
+        return 0
 
 
 @register.filter(name="silently_add_to_cart")

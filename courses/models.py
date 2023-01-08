@@ -24,7 +24,8 @@ class Category(TimeStampedModel):
         verbose_name_plural = "Categories"
 
     def save(self, *args, **kwargs):
-        self.slug = slug_generator(self)
+        if self.slug is None:
+            self.slug = slug_generator(self)
         super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -42,7 +43,8 @@ class Tag(TimeStampedModel):
         db_table = "tags"
 
     def save(self, *args, **kwargs):
-        self.slug = slug_generator(self)
+        if self.slug is None:
+            self.slug = slug_generator(self)
         super(Tag, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -68,7 +70,11 @@ class Course(TimeStampedModel):
     language = models.CharField(max_length=30)
     old_price = models.DecimalField(decimal_places=2, max_digits=9, default=0.0)
     price = models.DecimalField(decimal_places=2, max_digits=9)
-    thumbnail = ResizedImageField(size=[600, 400], upload_to="courses/thumbnails")
+    thumbnail = ResizedImageField(
+        size=[600, 400],
+        upload_to="courses/thumbnails/",
+        default="courses/thumbnails/placeholder.png",
+    )
     lessons = models.PositiveSmallIntegerField("Number of Lessons", default=12)
     number_of_weeks = models.PositiveSmallIntegerField("Number of Weeks", default=8)
     is_active = models.BooleanField(default=True)
@@ -78,7 +84,8 @@ class Course(TimeStampedModel):
         ordering = ["pk"]
 
     def save(self, *args, **kwargs):
-        self.slug = slug_generator(self)
+        if not self.slug:
+            self.slug = slug_generator(self, save=False)
         super(Course, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -91,9 +98,9 @@ class Course(TimeStampedModel):
     def discount(self):
         return round((self.old_price - self.price) / self.old_price * 100)
 
-    # @method
-    def get_courses_by_id(ids):  # sourcery skip
-        return Course.objects.filter(pk__in=ids)
+    @classmethod
+    def get_courses_by_id(cls, ids):
+        return cls.objects.filter(pk__in=ids)
 
 
 class CourseTag(TimeStampedModel):
@@ -157,9 +164,9 @@ class Member(TimeStampedModel):
     def __str__(self):
         return self.member.name
 
-    @property
-    def member_rating(self):
-        return Member.objects.annotate(avg_rating=Avg("teacher_reviews"))
+    @classmethod
+    def member_rating(cls):
+        return cls.objects.annotate(avg_rating=Avg("teacher_reviews"))
 
 
 class HitDetail(TimeStampedModel):

@@ -433,7 +433,7 @@
                                                          </span>
                                                       </div>
                                                       <div class="course__action-content">
-                                                         <span>{{ course|student_count|default_if_none:"0" }}</span>
+                                                         <span>{{ course.pk|student_count|default_if_none:"0" }}</span>
                                                       </div>
                                                    </div>
                                                 </li>
@@ -559,7 +559,7 @@
                                  </div>
                                  <div class="course__video-info">
                                     <h5><span>Enrolled :</span> 
-                                       {{ course|student_count|default_if_none:"0" }}
+                                       {{ course.pk|student_count|default_if_none:"0" }}
                                     </h5>
                                  </div>
                               </li>

@@ -29,7 +29,8 @@ class Article(models.Model):
         ordering = ["-created"]
 
     def save(self, *args, **kwargs):
-        self.slug = slug_generator(self)
+        if not self.slug:
+            self.slug = slug_generator(self)
         super(Article, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -43,7 +44,9 @@ class ArticleTag(models.Model):
     article = models.ForeignKey(
         Article, on_delete=models.CASCADE, related_name="article_tags"
     )
-    tag = models.ForeignKey("courses.Tag", on_delete=models.CASCADE, null=True, blank=True)
+    tag = models.ForeignKey(
+        "courses.Tag", on_delete=models.CASCADE, null=True, blank=True
+    )
 
     class Meta:
         db_table = "article_tags"
@@ -74,7 +77,9 @@ class ArticleHit(models.Model):
     article = models.ForeignKey(
         Article, on_delete=models.SET_NULL, related_name="article_hits", null=True
     )
-    hit = models.ForeignKey("courses.HitDetail", on_delete=models.CASCADE, null=True, blank=True)
+    hit = models.ForeignKey(
+        "courses.HitDetail", on_delete=models.CASCADE, null=True, blank=True
+    )
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:

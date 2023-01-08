@@ -4,7 +4,7 @@ from .models import Article, ArticleTag, Comment, ArticleHit
 
 
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ["author", "title", "is_draft", "created", "updated"]
+    list_display = ["author", "title", "slug", "is_draft", "created", "updated"]
     search_fields = ["author", "title"]
     prepopulated_fields = {"slug": ("title",)}
 

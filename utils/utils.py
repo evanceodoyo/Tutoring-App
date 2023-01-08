@@ -28,25 +28,5 @@ def slug_generator(instance, new_slug=None):
         rand_int = random.randint(300_000, 500_000)
         slug = f"{slug}-{rand_int}"
         return slug_generator(instance, new_slug=slug)
-
+    
     return slug
-
-# def slug_generator(instance, new_slug=None):
-#     """
-#     Generate a unique slug for Course/Article/Category/Tag from their titles.
-#     """
-#     slug = new_slug if new_slug is not None else slugify(instance.title)
-#     Klass = instance.__class__
-#     qs = Klass.objects.filter(slug=slug).exclude(id=instance.id)
-#     if qs.exists():
-#         rand_int = random.randint(300_000, 500_000)
-#         slug = f"{slug}-{rand_int}"
-#         return slug_generator(instance, new_slug=slug)
-
-#     return slug
-
-def method(func):
-    @wraps(func)
-    def wrapper(cls, *args, **kwargs):
-        return func(cls, *args, **kwargs)
-    return wrapper
