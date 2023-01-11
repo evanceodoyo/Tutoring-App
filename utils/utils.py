@@ -3,10 +3,8 @@ import string
 from django.utils.text import slugify
 from functools import wraps
 
-
 def random_string_generator(size=5, chars=string.ascii_uppercase + string.digits):
     return "".join(random.choice(chars) for _ in range(size))
-
 
 def unique_enroll_id_generator(instance, new_enroll_id=None):
     """
@@ -28,5 +26,4 @@ def slug_generator(instance, new_slug=None):
         rand_int = random.randint(300_000, 500_000)
         slug = f"{slug}-{rand_int}"
         return slug_generator(instance, new_slug=slug)
-    
     return slug

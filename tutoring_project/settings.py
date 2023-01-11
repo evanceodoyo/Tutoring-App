@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'events',
     'blog',
     'contact',
+
     'tinymce',
     'crispy_forms',
     'django_user_agents'
@@ -156,9 +157,9 @@ EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-NOTIFICATION_SYSTEM_TARGETS={
+NOTIFICATION_SYSTEM_TARGETS = {
   "email": {
-      'from_email': EMAIL_HOST_USER # Sending email address
+      'from_email': EMAIL_HOST_USER
   }
 }
 
