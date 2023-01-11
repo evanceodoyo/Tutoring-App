@@ -1,16 +1,16 @@
-from django.contrib.auth import get_user_model
+from datetime import date
+
 from django.shortcuts import get_object_or_404, render
 from django.contrib import messages
 from django.shortcuts import redirect
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 
 from .models import Event, EventTicket
 from courses.models import Course
-from datetime import date
 
 User = get_user_model()
 today = date.today()
-
 
 def eventsList(request):
     try:
