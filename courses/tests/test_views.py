@@ -67,8 +67,9 @@ class HomeTests(TestCase):
         self.assertEqual(response.status_code, 200)
         courses = Course.objects.annotate(
             avg_rating=Avg("course_reviews__rating")
-        ).filter(id=1, is_active=True)
+        ).filter(is_active=True)
         self.assertQuerysetEqual(response.context["courses"], courses)
+        self.assertEqual(response.context["courses"].first().avg_rating, 5.0)
         self.assertTemplateUsed(response, "index.html")
 
     def test_featured_courses_title(self):

@@ -18,10 +18,10 @@ class CategoryModelTests(TestCase):
         with self.assertRaises(IntegrityError) as cm:
             Category.objects.create(title="Test Category")
 
-        # Check that the error message is correct
-        self.assertEqual(
-            str(cm.exception), "UNIQUE constraint failed: categories.title"
-        )
+            # Check that the error message is correct
+            self.assertEqual(
+                str(cm.exception), "UNIQUE constraint failed: categories.title"
+            )
 
     def test_category_assigned_correct_slug_on_creation(self):
         self.assertEqual(self.category.slug, "test-category")
@@ -42,8 +42,8 @@ class TagModelTests(TestCase):
         with self.assertRaises(IntegrityError) as cm:
             Tag.objects.create(title="Test tag")
 
-        # Check that the error message is correct
-        self.assertEqual(str(cm.exception), "UNIQUE constraint failed: tags.title")
+            # Check that the error message is correct
+            self.assertEqual(str(cm.exception), "UNIQUE constraint failed: tags.title")
 
     def test_tag_assigned_correct_slug_on_creation(self):
         self.assertEqual(self.tag.slug, "test-tag")
@@ -118,13 +118,13 @@ class CourseModelTests(TestCase):
                 thumbnail="courses/thumbnails/course_img.png",
             )
 
-        # Check that the error message is correct
-        self.assertEqual(str(cm.exception), "UNIQUE constraint failed: courses.title")
+            # Check that the error message is correct
+            self.assertEqual(str(cm.exception), "UNIQUE constraint failed: courses.title")
 
     def test_course_get_absolute_url(self):
         self.assertEqual(self.course.get_absolute_url(), "/course/test-course/")
 
-    def test_course_discount_methond_returns_correct_percentage(self):
+    def test_course_discount_method_returns_correct_percentage(self):
         expected_discount = round(
             (self.course.old_price - self.course.price) / self.course.old_price * 100
         )

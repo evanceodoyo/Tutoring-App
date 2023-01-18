@@ -16,7 +16,7 @@ class TimeStampedModel(models.Model):
 
 class Category(TimeStampedModel):
     title = models.CharField(max_length=50, unique=True)
-    slug = models.SlugField(max_length=100, unique=True)
+    slug = models.SlugField(unique=True)
 
     class Meta:
         db_table = "categories"
@@ -24,8 +24,10 @@ class Category(TimeStampedModel):
         verbose_name_plural = "Categories"
 
     def save(self, *args, **kwargs):
-        if self.slug is None:
+        if self.slug is None or self.slug == "":
             self.slug = slug_generator(self)
+        else:
+            self.slug = slug_generator(self, new_slug=self.slug)
         super(Category, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -43,8 +45,10 @@ class Tag(TimeStampedModel):
         db_table = "tags"
 
     def save(self, *args, **kwargs):
-        if self.slug is None:
+        if self.slug is None or self.slug == "":
             self.slug = slug_generator(self)
+        else:
+            self.slug = slug_generator(self, new_slug=self.slug)
         super(Tag, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -84,8 +88,10 @@ class Course(TimeStampedModel):
         ordering = ["pk"]
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slug_generator(self, save=False)
+        if self.slug is None or self.slug == "":
+            self.slug = slug_generator(self)
+        else:
+            self.slug = slug_generator(self, new_slug=self.slug)
         super(Course, self).save(*args, **kwargs)
 
     def __str__(self):
