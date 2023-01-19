@@ -26,7 +26,7 @@ def addToCart(request):
 def getCartTotal(request):
     cart_courses = Course.get_courses_by_id(list(request.session.get("cart").keys()))
     cart_total = sum(course.price for course in cart_courses)
-    return cart_courses, cart_total
+    return (cart_courses, cart_total)
 
 
 def cart(request):

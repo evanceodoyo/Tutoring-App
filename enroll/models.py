@@ -30,14 +30,6 @@ class Enrollment(models.Model):
         return f"Enroll #{self.enrollment_id} by {self.student}"
 
 
-# def create_enrollment_id(sender, instance, *args, **kwargs):
-#     if not instance.enrollment_id:
-#         instance.enrollment_id = unique_enroll_id_generator(instance)
-
-
-# pre_save.connect(create_enrollment_id, sender=Enrollment)
-
-
 class EnrolledCourse(models.Model):
     enrollment = models.ForeignKey(
         Enrollment, related_name="courses", on_delete=models.CASCADE
