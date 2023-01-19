@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 
 from django.shortcuts import get_object_or_404, render
 from django.contrib import messages
@@ -10,13 +10,14 @@ from .models import Event, EventTicket
 from courses.models import Course
 
 User = get_user_model()
-today = date.today()
+today = datetime.now()
+
 
 def eventsList(request):
     try:
         events = (
             Event.objects.select_related("organiser")
-            .filter(start_date__gte=today, is_active=True)
+            .filter(start_date__gte=today.date(), is_active=True)
             .order_by("start_date")
         )
         course_teachers = Course.objects.only("owner")[:4]
@@ -35,7 +36,9 @@ def eventsList(request):
 
 
 def eventDetail(request, event_slug):
-    event = get_object_or_404(Event, slug=event_slug, is_active=True)
+    event = get_object_or_404(
+        Event, slug=event_slug, is_active=True, start_date__gte=today.date()
+    )
     return render(
         request,
         "event-details.html",
@@ -49,7 +52,12 @@ def eventDetail(request, event_slug):
 @login_required
 def enrollEvent(request, event_slug):
     try:
-        event = get_object_or_404(Event, slug=event_slug, start_date__gte=today)
+        event = get_object_or_404(
+            Event,
+            slug=event_slug,
+            start_date__gte=today.date(),
+            start_time__gte=today.time(),
+        )
         if request.method == "POST":
             user = request.user
             phone = request.POST.get("phone")  # Use for M-Pesa integration.
@@ -58,7 +66,7 @@ def enrollEvent(request, event_slug):
             #     return redirect(event)
 
             EventTicket.objects.create(user=user, event=event, amount=event.price)
-            messages.success(request, "Ticket purchase successfull, thank you.")
+            messages.success(request, "Ticket purchase successful, thank you.")
             return redirect(event)
         return redirect(event)
     except Exception as e:

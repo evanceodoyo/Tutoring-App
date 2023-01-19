@@ -11,7 +11,7 @@ from courses.views import (
 )
 
 
-class CourseRouteTests(TestCase):
+class CourseURLTests(TestCase):
     def test_home_url_exists_at_correct_location(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)

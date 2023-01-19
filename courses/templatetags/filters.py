@@ -2,6 +2,7 @@ from django import template
 from enroll.models import EnrolledCourse
 from courses.models import Course
 from django.db.models import Count, Q
+
 # from courses.tasks import astudent_count, adetailed_rating
 
 register = template.Library()

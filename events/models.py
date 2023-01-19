@@ -1,19 +1,12 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import uuid
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
+from utils.utils import slug_generator
 from django_resized import ResizedImageField
 
 from courses.models import Category, Tag, TimeStampedModel
-
-
-def default_start_time():
-    return datetime.now() + timedelta(days=1)
-
-
-def default_end_time():
-    return default_start_time() + timedelta(hours=4)
 
 
 class Event(TimeStampedModel):
@@ -37,6 +30,17 @@ class Event(TimeStampedModel):
     class Meta:
         db_table = "events"
 
+    def save(self, *args, **kwargs):
+        if self.slug is None or self.slug == "":
+            self.slug = slug_generator(self)
+        else:
+            self.slug = slug_generator(self, new_slug=self.slug)
+        try:
+            self.validate_event_time()
+        except Exception as e:
+            raise e
+        super(Event, self).save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.title} organised by {self.organiser}"
 
@@ -46,8 +50,17 @@ class Event(TimeStampedModel):
     def discount(self):
         return round((self.old_price - self.price) / self.old_price * 100)
 
-    def event_expired(self):
-        return
+    def validate_event_time(self):
+        event_start = datetime.combine(self.start_date, self.start_time)
+        event_end = datetime.combine(self.end_date, self.end_time)
+        if event_start >= event_end:
+            raise Exception(
+                "The event's start time cannot be greater than or same as the event's end time."
+            )
+        if event_end <= datetime.now():
+            raise Exception(
+                "The end date and time of the event must be a later time of today or in the future."
+            )
 
 
 class EventTag(models.Model):
