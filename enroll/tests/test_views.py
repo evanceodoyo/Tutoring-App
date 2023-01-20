@@ -139,7 +139,10 @@ class CartTests(TestCase):
 
     def test_cart_view_adds_cart_courses_and_total_to_context(self):
         # simulate cart exists
-        self.client.get(reverse('add_to_cart'), {'course_id': self.course.pk})
+        session = self.client.session
+        session['cart'] = {str(self.course.pk): 1}
+        session.save()
+
         response = self.client.get(self.url)
         self.assertIsNotNone(response.context['cart_courses'])
         self.assertIsNotNone(response.context['cart_total'])
@@ -156,8 +159,12 @@ class CartTests(TestCase):
             price=100,
             thumbnail="courses/thumbnails/course_img.png",
         )
-        self.client.get(reverse('add_to_cart'), {'course_id': self.course.pk})
-        self.client.get(reverse('add_to_cart'), {'course_id': course.pk})
+        
+        # simulate courses in cart
+        session = self.client.session
+        session['cart'] = {str(self.course.pk): 1}
+        session['cart'].update({str(course.pk): 1})
+        session.save()
 
         # send a GET request to the cart view with the test course id
         # To remove `Test Course` from cart.
@@ -166,9 +173,131 @@ class CartTests(TestCase):
 
         # assert that an info message is displayed to the user
         messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(len(messages), 3)
-        self.assertEqual(str(messages[-1]), "Course removed from cart successfully.")
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "Course removed from cart successfully.")
 
         # assert user is redirected to cart
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("cart"))
+
+
+
+class CheckoutViewTests(TestCase):
+    def setUp(self):
+        self.teacher = User.objects.create_user(
+            name="test teacher",
+            username="testteacher",
+            email="test@teacher.com",
+            password="secret",
+            is_student=False,
+        )
+        self.student = User.objects.create_user(
+            name="test student",
+            username="teststudent",
+            email="test@student.com",
+            password="secret",
+            is_student=True,
+        )
+        self.category = Category.objects.create(title="Test category")
+        self.tag = Tag.objects.create(title="Test tag")
+        self.course = Course.objects.create(
+            owner=self.teacher,
+            title="Test Course",
+            category=self.category,
+            overview="The overview of a test course.",
+            language="English",
+            old_price=200,
+            price=150,
+            thumbnail="courses/thumbnails/course_img.png",
+        )        
+        self.url = reverse("checkout")
+
+    def test_checkout_view_redirects_to_login_if_not_logged_in(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/accounts/login/?next=/enroll/checkout/')
+        self.assertRedirects(response, reverse('login') + '?next=/enroll/checkout/')
+
+    def test_checkout_view_displays_error_message_if_cart_empty(self):
+        self.client.force_login(self.student)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("courses"))
+
+        # assert info is displayed to the user
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), 'Please select course(s) to enroll first.')
+
+    def test_checkout_view_removes_enrolled_course_from_cart(self):
+        enrollment = Enrollment.objects.create(
+            enrollment_id="123AB",
+            student=self.student,
+            amount=self.course.price,
+        )
+        EnrolledCourse.objects.create(
+            enrollment=enrollment, course=self.course, student=self.student
+        )
+
+        course = Course.objects.create(
+            owner=self.teacher,
+            title="Test Course 2",
+            category=self.category,
+            overview="The overview of a test course 2.",
+            language="English",
+            old_price=150,
+            price=100,
+            thumbnail="courses/thumbnails/course_img.png",
+        )
+        # self.client.get(reverse('add_to_cart'), {'course_id': self.course.pk})
+        # self.client.get(reverse('add_to_cart'), {'course_id': course.pk})
+
+        session = self.client.session
+        session['cart'] = {str(self.course.pk): 1}
+        session['cart'].update({str(course.pk): 1})
+        session.save()
+        self.client.force_login(self.student)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('checkout'))
+
+        # assert info is displayed to the user
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), f'{self.course.title} removed. You are enrolled for the course already!')
+
+        # assert the enrolled course does not exist in cart
+        self.assertNotIn(str(self.course.pk), self.client.session['cart'])
+        
+
+    def test_checkout_view_enrolls_user_in_courses_and_clears_cart(self):
+        self.client.force_login(self.student)
+        session = self.client.session
+        session['cart'] = {str(self.course.pk): 1}
+        session.save()
+
+        # send POST request to the checkout view
+        response = self.client.post(reverse('checkout'))
+
+        # assert the user is redirected
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('my_courses'))
+
+        # assert the enrollment is saved in the database
+        enrollment = Enrollment.objects.all()
+        enrolled_course = EnrolledCourse.objects.all()
+        self.assertEqual(enrollment.count(), 1)
+        self.assertEqual(enrolled_course.count(), 1)
+
+        # 
+        self.assertEqual(enrollment.first().student, self.student)
+        self.assertEqual(enrolled_course.first().student, self.student)
+
+        # assert cart is cleared on successful enrollment
+        self.assertEqual(self.client.session['cart'], {})
+
+        # assert success messages show to the user
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "Enrollment successful. Thank you!")

@@ -99,6 +99,7 @@ def checkout(request):
             phone = request.POST.get("phone")  # Use for M-Pesa integration.
             enrollCourse(cart_courses, cart_total, user)
             request.session["cart"] = {}
+            messages.success(request, "Enrollment successful. Thank you!")
             return redirect("my_courses")
 
         return render(
