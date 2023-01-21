@@ -1,9 +1,8 @@
-from enroll.models import EnrolledCourse
-from courses.models import Course
+from celery import shared_task
 from django.db.models import Count, Q
 
-from celery import shared_task
-
+from courses.models import Course
+from enroll.models import EnrolledCourse
 
 # """
 # The prefix `a` for every task denotes `async`.

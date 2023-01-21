@@ -1,12 +1,11 @@
 from datetime import datetime, timedelta
 
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
 from django.urls import reverse
 
 from courses.models import Category, Course
 from events.models import Event, EventTicket
-
 
 User = get_user_model()
 now = datetime.now()

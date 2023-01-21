@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.urls import reverse
 from django.db.models import Avg
-from utils.utils import slug_generator
+from django.urls import reverse
 from django_resized import ResizedImageField
+
+from utils.utils import slug_generator
 
 
 class TimeStampedModel(models.Model):

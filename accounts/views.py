@@ -1,14 +1,14 @@
 import re
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, get_user_model, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
-
+from enroll.models import EnrolledCourse
 from utils.decorators import unauthenticated_user_required
 
 from .models import NewsLetterSubscriber
-from enroll.models import EnrolledCourse
 from .tasks import send_reset_email
 
 User = get_user_model()

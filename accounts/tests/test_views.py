@@ -1,12 +1,11 @@
+from django.contrib.auth import get_user_model
+from django.contrib.messages import get_messages
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.messages import get_messages
-from django.contrib.auth import get_user_model
 
 from accounts.models import NewsLetterSubscriber
-from courses.models import Course, Category
-from enroll.models import Enrollment, EnrolledCourse
-
+from courses.models import Category, Course
+from enroll.models import EnrolledCourse, Enrollment
 
 User = get_user_model()
 

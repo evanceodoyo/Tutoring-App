@@ -1,14 +1,8 @@
 from django.test import TestCase
-from django.urls import reverse, resolve
-from courses.views import (
-    courseDetail,
-    courseReview,
-    myCourses,
-    teamDetail,
-    teacherReview,
-    tag,
-    category,
-)
+from django.urls import resolve, reverse
+
+from courses.views import (category, courseDetail, courseReview, myCourses,
+                           tag, teacherReview, teamDetail)
 
 
 class CourseURLTests(TestCase):

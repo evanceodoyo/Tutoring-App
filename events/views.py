@@ -1,13 +1,13 @@
 from datetime import datetime
 
-from django.shortcuts import get_object_or_404, render
 from django.contrib import messages
-from django.shortcuts import redirect
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+
+from courses.models import Course
 
 from .models import Event, EventTicket
-from courses.models import Course
 
 User = get_user_model()
 today = datetime.now()

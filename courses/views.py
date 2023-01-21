@@ -1,25 +1,18 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import (EmptyPage, InvalidPage, PageNotAnInteger,
+                                   Paginator)
 from django.db.models import Avg, Count, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
 
 from blog.models import Article
-from events.models import Sponsor, Event
 from enroll.models import EnrolledCourse
+from events.models import Event, Sponsor
 
-from .models import (
-    Category,
-    Course,
-    CourseReviewRating,
-    HitDetail,
-    CourseHit,
-    Tag,
-    TeacherReviewRating,
-    Member,
-)
+from .models import (Category, Course, CourseHit, CourseReviewRating,
+                     HitDetail, Member, Tag, TeacherReviewRating)
 
 User = get_user_model()
 

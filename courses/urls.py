@@ -1,19 +1,8 @@
 from django.urls import path
 
-from .views import (
-    about,
-    category,
-    courseDetail,
-    courseList,
-    courseReview,
-    home,
-    myCourses,
-    search,
-    tag,
-    team,
-    teamDetail,
-    teacherReview,
-)
+from .views import (about, category, courseDetail, courseList, courseReview,
+                    home, myCourses, search, tag, teacherReview, team,
+                    teamDetail)
 
 urlpatterns = [
     path("", home, name="home"),

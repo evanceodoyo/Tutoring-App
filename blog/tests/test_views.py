@@ -1,7 +1,8 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
-from blog.models import Article, Comment
+from django.test import TestCase
 from django.urls import reverse
+
+from blog.models import Article, Comment
 from courses.models import Category, Tag
 
 User = get_user_model()

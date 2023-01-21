@@ -1,9 +1,10 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.contrib.messages import get_messages
-from courses.models import Category, Course, Tag
-from enroll.models import Enrollment, EnrolledCourse
+from django.test import TestCase
 from django.urls import reverse
+
+from courses.models import Category, Course, Tag
+from enroll.models import EnrolledCourse, Enrollment
 
 User = get_user_model()
 

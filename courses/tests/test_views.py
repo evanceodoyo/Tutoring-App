@@ -1,18 +1,13 @@
+from django.contrib.auth import get_user_model
+from django.contrib.messages import get_messages
+from django.db.models import Avg, Count
 from django.test import TestCase
 from django.urls import reverse
-from django.contrib.auth import get_user_model
-from django.db.models import Avg, Count
-from courses.models import (
-    Category,
-    Course,
-    Tag,
-    CourseTag,
-    TeacherReviewRating,
-    CourseReviewRating,
-)
-from enroll.models import Enrollment, EnrolledCourse
+
 from blog.models import Article
-from django.contrib.messages import get_messages
+from courses.models import (Category, Course, CourseReviewRating, CourseTag,
+                            Tag, TeacherReviewRating)
+from enroll.models import EnrolledCourse, Enrollment
 
 User = get_user_model()
 

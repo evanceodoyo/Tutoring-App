@@ -1,12 +1,13 @@
-from datetime import datetime
 import uuid
+from datetime import datetime
+
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
-from utils.utils import slug_generator
 from django_resized import ResizedImageField
 
 from courses.models import Category, Tag, TimeStampedModel
+from utils.utils import slug_generator
 
 
 class Event(TimeStampedModel):

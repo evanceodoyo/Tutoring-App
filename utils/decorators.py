@@ -1,6 +1,8 @@
-from django.shortcuts import redirect
-from courses.models import Course
 from django.contrib import messages
+from django.shortcuts import redirect
+
+from courses.models import Course
+
 
 def student_required(get_response):
     def middleware(request, *args, **kwargs):

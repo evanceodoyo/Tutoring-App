@@ -1,6 +1,6 @@
-from django.conf import settings
 import datetime
 
+from django.conf import settings
 
 date_established = datetime.datetime(2022, 4, 1, 12, 0)
 today = datetime.datetime.now()

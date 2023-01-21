@@ -1,6 +1,7 @@
 from django.test import TestCase
-from django.urls import reverse, resolve
-from blog.views import articleDetail, postComment, articleSearch
+from django.urls import resolve, reverse
+
+from blog.views import articleDetail, articleSearch, postComment
 
 
 class TestBlogUrls(TestCase):

@@ -1,15 +1,15 @@
 from django.contrib import messages
-from django.db.models import Count
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import (EmptyPage, InvalidPage, PageNotAnInteger,
+                                   Paginator)
+from django.db.models import Count, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage, InvalidPage
 
 from courses.models import Category, Tag
 from courses.views import get_user_agent_details
-from django.db.models import Q
 
-from .models import Article, Comment, ArticleHit
+from .models import Article, ArticleHit, Comment
 
 
 def articles(request):

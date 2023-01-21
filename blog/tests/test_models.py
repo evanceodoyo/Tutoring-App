@@ -1,7 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
+
 from blog.models import Article, ArticleTag, Comment
 from courses.models import Category, Tag
-from django.contrib.auth import get_user_model
 
 User = get_user_model()
 

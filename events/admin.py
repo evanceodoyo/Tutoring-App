@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Event, Objective, EventObjective, EventTag, Sponsor, EventTicket
+from .models import (Event, EventObjective, EventTag, EventTicket, Objective,
+                     Sponsor)
 
 
 class EventAdmin(admin.ModelAdmin):

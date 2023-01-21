@@ -1,6 +1,7 @@
 from django.test import TestCase
-from django.urls import reverse, resolve
-from events.views import eventDetail, enrollEvent
+from django.urls import resolve, reverse
+
+from events.views import enrollEvent, eventDetail
 
 
 class EventURLTests(TestCase):

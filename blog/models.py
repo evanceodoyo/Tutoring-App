@@ -1,9 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
-from tinymce.models import HTMLField
-from utils.utils import slug_generator
 from django_resized import ResizedImageField
+from tinymce.models import HTMLField
+
+from utils.utils import slug_generator
 
 
 class Article(models.Model):

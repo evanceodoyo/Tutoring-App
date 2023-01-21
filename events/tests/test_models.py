@@ -1,15 +1,11 @@
-from django.test import TestCase
-from django.db import IntegrityError
 from datetime import datetime, timedelta
+
 from django.contrib.auth import get_user_model
-from events.models import (
-    Event,
-    Category,
-    EventTag,
-    Objective,
-    EventObjective,
-    EventTicket,
-)
+from django.db import IntegrityError
+from django.test import TestCase
+
+from events.models import (Category, Event, EventObjective, EventTag,
+                           EventTicket, Objective)
 
 User = get_user_model()
 
