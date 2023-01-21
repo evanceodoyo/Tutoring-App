@@ -1,9 +1,16 @@
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from .views import (loginView, logoutView, newsLetterSubscription,
-                    passwordChange, passwordReset, profile, profileUpdate,
-                    signUp)
+from .views import (
+    loginView,
+    logoutView,
+    newsLetterSubscription,
+    passwordChange,
+    passwordReset,
+    profile,
+    profileUpdate,
+    signUp,
+)
 
 urlpatterns = [
     path("sign-up/", signUp, name="sign_up"),

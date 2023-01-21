@@ -11,6 +11,7 @@ User = get_user_model()
 now = datetime.now()
 evnt_end = now + timedelta(days=1)
 
+
 class EventsListViewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -56,9 +57,8 @@ class EventsListViewTests(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["page_title"], "Events")
-        self.assertTemplateUsed('events.html')
-        
-        
+        self.assertTemplateUsed("events.html")
+
     def test_event_list_contains_active_events(self):
         Event.objects.create(
             organiser=self.user,
@@ -108,7 +108,7 @@ class EventsListViewTests(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context["course_teachers"].exists())
-    
+
     def test_course_teachers_available(self):
         Course.objects.create(
             owner=self.user,
@@ -164,10 +164,12 @@ class EventDetailTests(TestCase):
         self.assertTemplateUsed(response, "event-details.html")
 
     def test_event_detail_with_invalid_slug_returns_404(self):
-        response = self.client.get(reverse(
+        response = self.client.get(
+            reverse(
                 "event_detail",
                 kwargs={"event_slug": "invalid-slug"},
-            ))
+            )
+        )
         self.assertEqual(response.status_code, 404)
         self.assertTemplateUsed(response, "404.html")
 
@@ -188,10 +190,12 @@ class EventDetailTests(TestCase):
             is_active=False,
         )
 
-        response = self.client.get(reverse(
+        response = self.client.get(
+            reverse(
                 "event_detail",
                 kwargs={"event_slug": "test-event-2"},
-            ))
+            )
+        )
         self.assertEqual(response.status_code, 404)
         self.assertTemplateUsed("404.html")
 
@@ -212,10 +216,12 @@ class EventDetailTests(TestCase):
             venue="Test Venue",
             is_active=True,
         )
-        response = self.client.get(reverse(
+        response = self.client.get(
+            reverse(
                 "event_detail",
                 kwargs={"event_slug": "test-event-3"},
-            ))
+            )
+        )
         self.assertEqual(response.status_code, 404)
         self.assertTemplateUsed("404.html")
 
@@ -252,24 +258,33 @@ class EnrollEventTests(TestCase):
         )
 
         self.url = reverse("event_detail", kwargs={"event_slug": self.event.slug})
-    
+
     def test_enroll_event_not_logged_in(self):
         # send a GET request to the enrollEvent view without logging in.
-        response = self.client.get(reverse('buy_event_ticket', kwargs={'event_slug': self.event.slug}))
+        response = self.client.get(
+            reverse("buy_event_ticket", kwargs={"event_slug": self.event.slug})
+        )
 
         # assert that the response status code is 302 (redirect)
         # and user is redirected to login page.
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('login') + '?next=' + reverse('buy_event_ticket', kwargs={'event_slug': self.event.slug}))
+        self.assertRedirects(
+            response,
+            reverse("login")
+            + "?next="
+            + reverse("buy_event_ticket", kwargs={"event_slug": self.event.slug}),
+        )
 
     def test_enroll_event_success(self):
         self.client.force_login(self.user2)
-        response = self.client.post(reverse('buy_event_ticket', kwargs={'event_slug': self.event.slug}))
+        response = self.client.post(
+            reverse("buy_event_ticket", kwargs={"event_slug": self.event.slug})
+        )
         self.assertEqual(response.status_code, 302)
 
         # assert that the user is redirected to the event page.
         self.assertRedirects(response, self.event.get_absolute_url())
-        
+
         # check the EventTicket table in the database.
         ticket = EventTicket.objects.get(user=self.user2, event=self.event)
         self.assertIsNotNone(ticket)

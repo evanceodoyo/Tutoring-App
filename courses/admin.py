@@ -1,9 +1,21 @@
 from django.contrib import admin
 
-from .models import (Audience, Category, Course, CourseAudience, CourseContent,
-                     CourseHit, CourseReviewRating, CourseTag, CourseWeek,
-                     HitDetail, Member, Tag, TeacherReviewRating,
-                     WeeklyCourseContent)
+from .models import (
+    Audience,
+    Category,
+    Course,
+    CourseAudience,
+    CourseContent,
+    CourseHit,
+    CourseReviewRating,
+    CourseTag,
+    CourseWeek,
+    HitDetail,
+    Member,
+    Tag,
+    TeacherReviewRating,
+    WeeklyCourseContent,
+)
 
 
 class CategoryAdmin(admin.ModelAdmin):

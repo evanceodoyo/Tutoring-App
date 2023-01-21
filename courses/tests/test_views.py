@@ -5,8 +5,14 @@ from django.test import TestCase
 from django.urls import reverse
 
 from blog.models import Article
-from courses.models import (Category, Course, CourseReviewRating, CourseTag,
-                            Tag, TeacherReviewRating)
+from courses.models import (
+    Category,
+    Course,
+    CourseReviewRating,
+    CourseTag,
+    Tag,
+    TeacherReviewRating,
+)
 from enroll.models import EnrolledCourse, Enrollment
 
 User = get_user_model()

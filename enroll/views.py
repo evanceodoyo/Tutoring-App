@@ -114,7 +114,7 @@ def checkout(request):
     else:
         messages.info(request, "Please select course(s) to enroll first.")
         return redirect("courses")
-    
+
 
 def enrollCourse(cart_courses, total, user):
     enrollment = Enrollment(student=user, amount=total)
@@ -123,6 +123,7 @@ def enrollCourse(cart_courses, total, user):
         EnrolledCourse.objects.create(
             enrollment=enrollment, student=user, course=course
         )
+
 
 def wishlist(request):
     return render(request, "wishlist.html")
