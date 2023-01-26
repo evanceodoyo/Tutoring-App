@@ -49,7 +49,8 @@ def already_enrolled(course, user):
     Check if the student is enrolled in the course.
     """
     return (
-        user.is_authenticated and user.enrolled_courses.filter(course=course).exists()
+        user.is_authenticated and user.enrolled_courses.filter(
+            course=course).exists()
     )
 
 
@@ -68,11 +69,3 @@ def detailed_rating(course_id, rating):
         return f"{(rating_count.r_count / rating_count.total_count) * 100:.2f}"
     except ZeroDivisionError:
         return 0
-
-
-@register.filter(name="silently_add_to_cart")
-def silently_add_to_cart(course_id, session_dict):
-    if "cart" in session_dict:
-        session_dict["cart"].update({course_id: 1})
-    session_dict["cart"] = {course_id: 1}
-    session_dict.save()

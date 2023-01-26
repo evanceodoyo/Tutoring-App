@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.contrib.auth import get_user_model
 from django.contrib.messages import get_messages
 from django.test import TestCase
@@ -310,3 +311,74 @@ class CheckoutViewTests(TestCase):
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
         self.assertEqual(str(messages[0]), "Enrollment successful. Thank you!")
+
+class DirectEnrollCourseViewTests(TestCase):
+    def setUp(self):
+        self.teacher = User.objects.create_user(
+            name="test teacher",
+            username="testteacher",
+            email="test@teacher.com",
+            password="secret",
+            is_student=False,
+        )
+        self.student = User.objects.create_user(
+            name="test student",
+            username="teststudent",
+            email="test@student.com",
+            password="secret",
+            is_student=True,
+        )
+        self.category = Category.objects.create(title="Test category")
+        self.tag = Tag.objects.create(title="Test tag")
+        self.course = Course.objects.create(
+            owner=self.teacher,
+            title="Test Course",
+            category=self.category,
+            overview="The overview of a test course.",
+            language="English",
+            old_price=200,
+            price=150,
+            thumbnail="courses/thumbnails/course_img.png",
+        )
+    
+    def test_direct_enroll_view_redirects_to_login_if_not_logged_in(self):
+        response = self.client.get(reverse("direct_course_enroll", kwargs={"course_slug": self.course.slug}))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("login")+ "?next=/enroll/" + self.course.slug + "/")
+        
+    def test_enroll_course_success(self):
+        student2 = User.objects.create_user(
+            name="test student2",
+            username="teststudent2",
+            email="test@student2.com",
+            password="secret",
+            is_student=True,
+        )
+        self.client.force_login(student2)
+        # Make a POST request to the view
+        response = self.client.post(reverse('direct_course_enroll', kwargs={'course_slug': self.course.slug}), {'phone': '0712345678'})
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('my_courses'))
+        # Check that an enrollment and enrolled course object were created
+        self.assertTrue(Enrollment.objects.filter(student=student2, amount=self.course.price).exists())
+        self.assertTrue(EnrolledCourse.objects.filter(student=student2, course=self.course).exists())
+
+    def test_enroll_course_already_enrolled(self):
+        self.client.force_login(self.student)
+        # Create an enrollment and enrolled course object for the user
+        enrollment = Enrollment.objects.create(enrollment_id='1231BC', student=self.student, amount=self.course.price)
+        EnrolledCourse.objects.create(enrollment=enrollment, student=self.student, course=self.course)
+
+        # Make a POST request to the view
+        response = self.client.post(reverse('direct_course_enroll', kwargs={"course_slug": self.course.slug},), {'phone': '0712345678'})
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('my_courses'))
+
+        # Assert that no new enrollment or enrolled course objects were created
+        self.assertEqual(Enrollment.objects.filter(student=self.student).count(), 1)
+        self.assertEqual(EnrolledCourse.objects.filter(student=self.student).count(), 1)
+        
+        # Assert the right message is shown to the user.
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]), "You are already enrolled in this course.")

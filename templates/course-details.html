@@ -597,8 +597,7 @@
                         </div>
                         <br>
                         <div class="course__enroll-btn">
-                           <input hidden type="text" value="{{ course.id|silently_add_to_cart:request.session }}" name="course_id">
-                           <button type="submit" class="tp-btn w-100 text-center" data-bs-toggle="modal" data-bs-target="#course_enroll_modal">Enroll <i class="far fa-arrow-right"></i></button>
+                           <button type="submit" name="enroll" class="tp-btn w-100 text-center" data-bs-toggle="modal" data-bs-target="#course_enroll_modal">Enroll <i class="far fa-arrow-right"></i></button>
                         </div>
                         {% endif %}
                      </div>
@@ -693,7 +692,7 @@
                      </div>
                   </div>
                   <div class="course__popup-info">
-                     <form action="{% url 'checkout' %}" method="post">
+                     <form action="{% url 'direct_course_enroll' course.slug %}" method="post">
                         {% csrf_token %}
                         <div class="row gx-3">
                            <div class="col-xl-12">

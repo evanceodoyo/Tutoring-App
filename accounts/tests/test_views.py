@@ -84,7 +84,8 @@ class SignUpViewTests(TestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Username you provided is already taken.")
+        self.assertContains(
+            response, "Username you provided is already taken.")
 
     def test_signup_view_creates_new_user_and_logs_in_if_valid_data_provided(self):
         response = self.client.post(
@@ -107,7 +108,8 @@ class SignUpViewTests(TestCase):
         self.assertTrue(User.objects.filter(email="test@example.com").exists())
         auth_user_id = self.client.session.get("_auth_user_id")
         self.assertTrue(auth_user_id)
-        self.assertEqual(auth_user_id, str(User.objects.get(username="testexample").pk))
+        self.assertEqual(auth_user_id, str(
+            User.objects.get(username="testexample").pk))
 
 
 class LoginViewTests(TestCase):
@@ -128,7 +130,8 @@ class LoginViewTests(TestCase):
 
     def test_login_view_displays_error_message_if_invalid_credentials(self):
         response = self.client.post(
-            self.url, {"email": "test@example.com", "password": "wrongpassword"}
+            self.url, {"email": "test@example.com",
+                       "password": "wrongpassword"}
         )
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
@@ -150,7 +153,8 @@ class LoginViewTests(TestCase):
 
     def test_login_view_logs_in_user_and_redirects_to_home_if_valid_credentials(self):
         response = self.client.post(
-            reverse("login"), {"email": "testuser@mail.com", "password": "secret"}
+            reverse("login"), {"email": "testuser@mail.com",
+                               "password": "secret"}
         )
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("home"))
@@ -223,7 +227,8 @@ class ProfileViewTests(TestCase):
     def test_profile_view_redirects_to_login_if_not_logged_in(self):
         response = self.client.get(reverse("profile"))
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("login") + "?next=" + reverse("profile"))
+        self.assertRedirects(response, reverse("login") +
+                             "?next=" + reverse("profile"))
 
     def test_profile_view_displays_enrolled_courses_and_user_data(self):
         # Login user and assert the can see their enrolled course/user data
@@ -337,7 +342,8 @@ class ProfileUpdateViewTests(TestCase):
         # assert error messages is shown to the user
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), "Profile not updated. Name cannot be empty!")
+        self.assertEqual(
+            str(messages[0]), "Profile not updated. Name cannot be empty!")
 
 
 class PasswordChangeViewTests(TestCase):
@@ -369,7 +375,8 @@ class PasswordChangeViewTests(TestCase):
         # assert error message is displayed to the user
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), "The passwords you entered do not match!")
+        self.assertEqual(
+            str(messages[0]), "The passwords you entered do not match!")
 
     def test_password_change_view_displays_error_message_if_current_password_is_wrong(
         self,
@@ -389,7 +396,8 @@ class PasswordChangeViewTests(TestCase):
         # assert error message is displayed to the user
         messages = list(get_messages(response.wsgi_request))
         self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]), "The current password entered is wrong.")
+        self.assertEqual(str(messages[0]),
+                         "The current password entered is wrong.")
 
     # TODO: Test password change email sent.
 
@@ -439,7 +447,8 @@ class NewsLetterSubscriptionViewTests(TestCase):
 
         # assert success message is shown to the user
         messages = list(get_messages(response.wsgi_request))
-        self.assertEqual(str(messages[0]), "Thanks for subscribing to our newsletter.")
+        self.assertEqual(
+            str(messages[0]), "Thanks for subscribing to our newsletter.")
         self.assertTrue(
             NewsLetterSubscriber.objects.filter(
                 email="testsubscriber@example.com"

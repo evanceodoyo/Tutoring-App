@@ -24,7 +24,8 @@ def addToCart(request):
 
 
 def getCartTotal(request):
-    cart_courses = Course.get_courses_by_id(list(request.session.get("cart").keys()))
+    cart_courses = Course.get_courses_by_id(
+        list(request.session.get("cart").keys()))
     cart_total = sum(course.price for course in cart_courses)
     return (cart_courses, cart_total)
 
@@ -87,7 +88,7 @@ def checkout(request):
         cart_courses, cart_total = getCartTotal(request)
 
         for course in cart_courses:
-            if user.enrolled_courses.filter(course=course).exists():
+            if EnrolledCourse.objects.filter(student=user, course=course).exists():
                 request.session.get("cart").pop(str(course.pk))
                 request.session.save()
                 messages.info(
@@ -97,7 +98,7 @@ def checkout(request):
                 return redirect("checkout")
         if request.method == "POST":
             phone = request.POST.get("phone")  # Use for M-Pesa integration.
-            enrollCourse(cart_courses, cart_total, user)
+            enrollCourses(cart_courses, cart_total, user)
             request.session["cart"] = {}
             messages.success(request, "Enrollment successful. Thank you!")
             return redirect("my_courses")
@@ -116,13 +117,34 @@ def checkout(request):
         return redirect("courses")
 
 
-def enrollCourse(cart_courses, total, user):
+def enrollCourses(cart_courses, total, user):
     enrollment = Enrollment(student=user, amount=total)
     enrollment.save()
     for course in cart_courses:
         EnrolledCourse.objects.create(
             enrollment=enrollment, student=user, course=course
         )
+
+
+@login_required
+def directCourseEnroll(request, course_slug):
+    course = get_object_or_404(Course, slug=course_slug)
+    user = request.user
+    if request.method == 'POST':
+        # check if user is already enrolled in the course
+        if not EnrolledCourse.objects.filter(student=user, course=course).exists():
+            phone = request.POST['phone']
+            enrollment = Enrollment.objects.create(
+                student=user, amount=course.price)
+            EnrolledCourse.objects.create(
+                enrollment=enrollment, student=user, course=course)
+            messages.success(
+                request, 'You have successfully enrolled in the course.')
+            return redirect("my_courses")
+        else:
+            messages.info(request, 'You are already enrolled in this course.')
+
+    return redirect("my_courses")
 
 
 def wishlist(request):
